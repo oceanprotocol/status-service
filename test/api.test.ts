@@ -1,11 +1,22 @@
-// import { expect } from 'chai'
-// import request from 'supertest'
-// import app from '../src/app'
+import monitor from '../api/monitor'
+import express from 'express'
+import request from 'supertest'
+import { expect } from 'chai'
 
-describe('Price Request Tests', () => {
-  it('Starts the server', async () => {
-    console.log('TEST')
+let server
+const app = express()
+app.get('/api/monitor', monitor)
+
+before((done) => {
+  server = app.listen(process.env.PORT || 3000, () => {
+    console.log(`Server running on port ${process.env.PORT || 3000}.`)
+    done()
   })
 })
 
-export {}
+describe('Price Request Tests', () => {
+  it('Starts the server', async () => {
+    request(monitor).get('/api/monitor').expect(200).expect('Hello World!')
+    console.log('TEST')
+  })
+})

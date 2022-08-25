@@ -1,5 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
+export async function test() {
+  try {
+    console.log('test 2')
+  } catch (error) {
+    console.log('test 2 - ERROR')
+  }
+}
+
 export default async function monitor(
   request: VercelRequest,
   response: VercelResponse
