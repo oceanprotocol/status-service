@@ -13,7 +13,7 @@ router.get('/', function (req: Request, res: Response) {
 
 /* GET: monitor current status of Ocean components. */
 router.get('/monitor/', function (req: Request, res: Response) {
-  monitor(req, res)
+  monitor(res)
 })
 
 export default router
