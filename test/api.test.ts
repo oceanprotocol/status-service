@@ -1,20 +1,30 @@
-import express from 'express'
-// import request from 'supertest'
-// import { expect } from 'chai'
+import request from 'supertest'
+import { assert } from 'chai'
+import app from '../src/app'
 
-let server
-const app = express()
+describe('Price Request Tests', function () {
+  this.timeout(5000)
 
-before((done) => {
-  server = app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server running on port ${process.env.PORT || 3000}.`)
-    done()
-  })
-})
-
-describe('Price Request Tests', () => {
   it('Starts the server', async () => {
-    // request(monitor).get('/api/monitor').expect(200).expect('Hello World!')
-    console.log('TEST')
+    request(app).get('/').expect('Content-Type', /json/).expect(200)
+  })
+
+  it('Monitors the current status of OCEAN', async () => {
+    const response = await request(app)
+      .get('/monitor')
+      .expect('Content-Type', /json/)
+      .expect(200)
+
+    console.log('response.body', response.body)
+    assert(response.body)
+  })
+
+  it('Gets the current status of Ocean services', async () => {
+    const response = await request(app)
+      .get('/')
+      .expect('Content-Type', /json/)
+      .expect(200)
+    console.log('response.body', response.body)
+    assert(response.body)
   })
 })
