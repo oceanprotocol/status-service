@@ -1,11 +1,9 @@
-import monitor from '../api/monitor'
 import express from 'express'
-import request from 'supertest'
-import { expect } from 'chai'
+// import request from 'supertest'
+// import { expect } from 'chai'
 
 let server
 const app = express()
-app.get('/api/monitor', monitor)
 
 before((done) => {
   server = app.listen(process.env.PORT || 3000, () => {
@@ -16,7 +14,7 @@ before((done) => {
 
 describe('Price Request Tests', () => {
   it('Starts the server', async () => {
-    request(monitor).get('/api/monitor').expect(200).expect('Hello World!')
+    // request(monitor).get('/api/monitor').expect(200).expect('Hello World!')
     console.log('TEST')
   })
 })
