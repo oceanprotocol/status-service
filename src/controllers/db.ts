@@ -13,7 +13,7 @@ export async function connection() {
         } else {
           console.log('Connected to database')
           db.run(
-            'CREATE TABLE IF NOT EXISTS users(market text, lastUpdatedOn integer)'
+            'CREATE TABLE IF NOT EXISTS users(aquarius text, market text, port text, lastUpdatedOn integer)'
           )
         }
       }
@@ -23,10 +23,10 @@ export async function connection() {
   }
 }
 
-export async function find(address, callback) {
+export async function find(network, callback) {
   try {
     db.all(
-      `SELECT wallet, lastUpdatedOn FROM users WHERE wallet = "${address}" ORDER BY lastUpdatedOn DESC`,
+      `SELECT wallet, lastUpdatedOn FROM users WHERE network = "${network}" ORDER BY lastUpdatedOn DESC`,
       [],
       function (err, row) {
         if (err) {
@@ -40,13 +40,12 @@ export async function find(address, callback) {
   }
 }
 
-export async function insert(record, callback) {
-  console.log('Inserting: ', record.market, record.lastUpdatedOn)
+export async function insert(status, callback) {
   // Insert some documents
   try {
     db.run(
-      `INSERT INTO users(market, lastUpdatedOn) VALUES(?, ?)`,
-      [record.market, record.lastUpdatedOn],
+      `INSERT INTO users(aquarius, market, port, lastUpdatedOn) VALUES(?, ?, ?, ?)`,
+      [status.aquarius, status.market, status.port, Date.now()],
       function (err) {
         if (err) {
           return console.log(err.message)
