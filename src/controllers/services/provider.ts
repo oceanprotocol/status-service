@@ -7,8 +7,6 @@ export default async function providerStatus(network: string) {
   )
   const version = (await response.json()).version
   const release = await latestRelease('provider')
-  console.log('version', version)
-  console.log('release', release)
 
   if (response.status === 200 && version === release) return 'UP'
   else if (response.status === 200) return 'WARNING'

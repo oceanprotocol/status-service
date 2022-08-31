@@ -13,7 +13,7 @@
     "preserveConstEnums": true,
     "outDir": "./dist/",
     "sourceMap": true,
-    "typeRoots": ["node_modules/@types"]
+    "emitDeclarationOnly": true
   },
   "exclude": ["node_modules", "*.js", "*.json"],
   "include": ["./src/**/*", "./test/**/*"]

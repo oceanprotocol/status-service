@@ -1,5 +1,7 @@
 import 'dotenv/config'
 import sqlite3 from 'sqlite3'
+import { Status } from '../@types/index'
+
 let db
 
 export async function connection() {
@@ -40,7 +42,7 @@ export async function find(network, callback) {
   }
 }
 
-export async function insert(status, callback) {
+export async function insert(status: Status) {
   // Insert some documents
   try {
     db.run(
@@ -57,9 +59,7 @@ export async function insert(status, callback) {
           return console.log(err.message)
         }
         // get the last insert id
-      },
-
-      callback()
+      }
     )
   } catch (err) {
     console.error(err)
