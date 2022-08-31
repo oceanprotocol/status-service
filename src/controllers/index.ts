@@ -5,6 +5,7 @@ import { insert } from './db'
 import aquariusStatus from './services/aquarius'
 import marketStatus from './services/market'
 import portStatus from './services/port'
+import providerStatus from './services/provider'
 
 interface Status {
   network: string
@@ -22,18 +23,22 @@ export default async function monitor(res: Response) {
   const market = await marketStatus()
   const port = await portStatus()
   const aquarius = await aquariusStatus()
-  console.log('aquarius', aquarius)
   try {
-    networks.forEach(async (network) => {
+    for (let i = 0; i < networks.length; i++) {
+      console.log('i', i)
+      const network = networks[i]
       console.log('network', network)
       const status: Status = { network }
+      const provider = await providerStatus(network)
+      console.log('provider', provider)
+      status.provider = provider
       status.market = market
       status.port = port
       status.aquarius = aquarius
       console.log({ status })
       // Update DB
       await insert(status, (result) => console.log(result))
-    })
+    }
 
     res.send({ response: 'Database has been updated' })
   } catch (error) {

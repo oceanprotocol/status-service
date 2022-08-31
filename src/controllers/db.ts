@@ -13,7 +13,7 @@ export async function connection() {
         } else {
           console.log('Connected to database')
           db.run(
-            'CREATE TABLE IF NOT EXISTS users(aquarius text, market text, port text, lastUpdatedOn integer)'
+            'CREATE TABLE IF NOT EXISTS users(aquarius text, provider text, market text, port text, lastUpdatedOn integer)'
           )
         }
       }
@@ -44,8 +44,14 @@ export async function insert(status, callback) {
   // Insert some documents
   try {
     db.run(
-      `INSERT INTO users(aquarius, market, port, lastUpdatedOn) VALUES(?, ?, ?, ?)`,
-      [status.aquarius, status.market, status.port, Date.now()],
+      `INSERT INTO users(aquarius, provider, market, port, lastUpdatedOn) VALUES(?, ?, ?, ?, ?)`,
+      [
+        status.aquarius,
+        status.provider,
+        status.market,
+        status.port,
+        Date.now()
+      ],
       function (err) {
         if (err) {
           return console.log(err.message)
