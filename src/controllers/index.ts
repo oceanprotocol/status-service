@@ -2,9 +2,9 @@ import { Response } from 'express'
 import 'dotenv/config'
 
 import { insert } from './db'
-import aquariusStatus from './aquarius'
-import marketStatus from './market'
-import portStatus from './port'
+import aquariusStatus from './services/aquarius'
+import marketStatus from './services/market'
+import portStatus from './services/port'
 
 interface Status {
   network: string
@@ -18,18 +18,18 @@ interface Status {
 }
 
 export default async function monitor(res: Response) {
-  console.log('monitor', process.env.NETWORKS)
   const networks = JSON.parse(process.env.NETWORKS)
-  console.log('networks', networks)
   const market = await marketStatus()
   const port = await portStatus()
+  const aquarius = await aquariusStatus()
+  console.log('aquarius', aquarius)
   try {
     networks.forEach(async (network) => {
       console.log('network', network)
       const status: Status = { network }
       status.market = market
       status.port = port
-      status.aquarius = await aquariusStatus()
+      status.aquarius = aquarius
       console.log({ status })
       // Update DB
       await insert(status, (result) => console.log(result))
