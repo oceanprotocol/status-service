@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import express from 'express'
-import monitor from '../controllers/monitor'
+import monitor from '../controllers'
 
 const router = express.Router()
 
