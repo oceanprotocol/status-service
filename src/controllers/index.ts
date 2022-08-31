@@ -6,6 +6,7 @@ import aquariusStatus from './services/aquarius'
 import marketStatus from './services/market'
 import portStatus from './services/port'
 import providerStatus from './services/provider'
+import subgraphStatus from './services/subgraph'
 import { Status } from '../@types/index'
 
 export default async function monitor(res: Response) {
@@ -17,8 +18,8 @@ export default async function monitor(res: Response) {
     for (let i = 0; i < networks.length; i++) {
       const network = networks[i]
       const status: Status = { network }
-      const provider = await providerStatus(network)
-      status.provider = provider
+      status.provider = await providerStatus(network)
+      status.subgraph = await subgraphStatus(network)
       status.market = market
       status.port = port
       status.aquarius = aquarius

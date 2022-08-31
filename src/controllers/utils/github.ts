@@ -9,7 +9,10 @@ export default async function latestRelease(repo: string) {
     const response = await octokit.request(
       `GET /repos/oceanprotocol/${repo}/releases`
     )
-    const version = response.data[0].name.replace('v', '')
+    const version = response.data[0].name
+      .replace(' ', '')
+      .replace('v', '')
+      .replace('Release', '')
 
     return version
   } catch (error) {

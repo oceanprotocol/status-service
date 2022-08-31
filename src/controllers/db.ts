@@ -15,7 +15,7 @@ export async function connection() {
         } else {
           console.log('Connected to database')
           db.run(
-            'CREATE TABLE IF NOT EXISTS users(aquarius text, provider text, market text, port text, lastUpdatedOn integer)'
+            'CREATE TABLE IF NOT EXISTS statusHistory(aquarius text, provider text, subgraph text, market text, port text, lastUpdatedOn integer)'
           )
         }
       }
@@ -28,7 +28,7 @@ export async function connection() {
 export async function find(network, callback) {
   try {
     db.all(
-      `SELECT wallet, lastUpdatedOn FROM users WHERE network = "${network}" ORDER BY lastUpdatedOn DESC`,
+      `SELECT wallet, lastUpdatedOn FROM statusHistory WHERE network = "${network}" ORDER BY lastUpdatedOn DESC`,
       [],
       function (err, row) {
         if (err) {
@@ -46,10 +46,11 @@ export async function insert(status: Status) {
   // Insert some documents
   try {
     db.run(
-      `INSERT INTO users(aquarius, provider, market, port, lastUpdatedOn) VALUES(?, ?, ?, ?, ?)`,
+      `INSERT INTO statusHistory(aquarius, provider, subgraph, market, port, lastUpdatedOn) VALUES(?, ?, ?, ?, ?, ?)`,
       [
         status.aquarius,
         status.provider,
+        status.subgraph,
         status.market,
         status.port,
         Date.now()
