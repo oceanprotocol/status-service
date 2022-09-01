@@ -32,8 +32,16 @@ export default async function faucetStatus(
   } else status.oceanBalanceSufficient = true
 
   // Check that faucet is responding with 200
-  const response = await fetch(`https://faucet.${network}.oceanprotocol.com/`)
-  if (response.status === 200) status.status = 'UP'
+  status.response = (
+    await fetch(`https://faucet.${network}.oceanprotocol.com/`)
+  ).status
+
+  if (
+    status.response === 200 &&
+    status.ethBalanceSufficient &&
+    status.oceanBalanceSufficient
+  )
+    status.status = 'UP'
   else status.status = 'DOWN'
 
   return status

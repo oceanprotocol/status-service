@@ -28,9 +28,9 @@ export default async function monitor(res: Response) {
           networks[i].infuraId,
           networks[i].oceanAddress
         )
-        console.log('faucet', faucet)
         status.faucet = faucet
-      }
+      } else status.faucet = { status: 'N/A' }
+
       status.provider = await providerStatus(network)
       status.subgraph = await subgraphStatus(network)
       status.market = market

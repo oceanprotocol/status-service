@@ -15,7 +15,15 @@ export async function connection() {
         } else {
           console.log('Connected to database')
           db.run(
-            'CREATE TABLE IF NOT EXISTS statusHistory(aquarius text, provider text, subgraph text, market text, port text, lastUpdatedOn integer)'
+            `CREATE TABLE IF NOT EXISTS statusHistory(
+              aquarius text, 
+              provider text, 
+              subgraph text, 
+              market text, 
+              port text,
+              faucet text,
+              lastUpdatedOn integer
+              )`
           )
         }
       }
@@ -43,16 +51,24 @@ export async function find(network, callback) {
 }
 
 export async function insert(status: Status) {
-  // Insert some documents
   try {
     db.run(
-      `INSERT INTO statusHistory(aquarius, provider, subgraph, market, port, lastUpdatedOn) VALUES(?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO statusHistory(
+        aquarius, 
+        provider, 
+        subgraph, 
+        market, 
+        port,
+        faucet,
+        lastUpdatedOn
+        ) VALUES(?, ?, ?, ?, ?, ?, ?)`,
       [
         status.aquarius,
         status.provider,
         status.subgraph,
         status.market,
         status.port,
+        status.faucet.status,
         Date.now()
       ],
       function (err) {
