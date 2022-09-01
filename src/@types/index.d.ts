@@ -1,3 +1,5 @@
+import { BigNumber } from 'ethers'
+
 export interface Status {
   network: string
   aquarius?: 'UP' | 'DOWN' | 'WARNING'
@@ -5,6 +7,12 @@ export interface Status {
   subgraph?: 'UP' | 'DOWN' | 'WARNING'
   market?: 'UP' | 'DOWN'
   port?: 'UP' | 'DOWN'
-  faucet?: string
+  faucet?: FaucetStatus
   operatorEngine?: string
+}
+
+export interface FaucetStatus {
+  status?: 'UP' | 'DOWN'
+  ethBalance?: BigNumber
+  ethBalanceSufficient?: boolean
 }
