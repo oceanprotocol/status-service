@@ -25,7 +25,8 @@ export default async function monitor(res: Response) {
         const faucet: FaucetStatus = await faucetStatus(
           network,
           networks[i].faucetWallet,
-          networks[i].infuraId
+          networks[i].infuraId,
+          networks[i].oceanAddress
         )
         console.log('faucet', faucet)
         status.faucet = faucet
