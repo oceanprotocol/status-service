@@ -22,6 +22,11 @@ export async function connection() {
               market text, 
               port text,
               faucet text,
+              faucetResponse text,
+              faucetEthBalance text,
+              faucetEthBalanceSufficient text,
+              faucetOceanBalance text,
+              oceanBalanceSufficient text,
               lastUpdatedOn integer
               )`
           )
@@ -60,14 +65,24 @@ export async function insert(status: Status) {
         market, 
         port,
         faucet,
+        faucetResponse,
+        faucetEthBalance,
+        faucetEthBalanceSufficient,
+        faucetOceanBalance,
+        oceanBalanceSufficient,
         lastUpdatedOn
-        ) VALUES(?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         status.aquarius,
         status.provider,
         status.subgraph,
         status.market,
         status.port,
+        status.faucet.status,
+        status.faucet.ethBalance,
+        status.faucet.ethBalanceSufficient,
+        status.faucet.oceanBalance,
+        status.faucet.oceanBalanceSufficient,
         status.faucet.status,
         Date.now()
       ],

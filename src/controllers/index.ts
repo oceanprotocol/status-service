@@ -20,16 +20,22 @@ export default async function monitor(res: Response) {
       const network = networks[i].name
       const status: Status = { network }
 
-      if (networks[i].test && networks[i].infuraId) {
-        console.log('check faucet')
-        const faucet: FaucetStatus = await faucetStatus(
+      if (networks[i].test && networks[i].infuraId)
+        status.faucet = await faucetStatus(
           network,
           networks[i].faucetWallet,
           networks[i].infuraId,
           networks[i].oceanAddress
         )
-        status.faucet = faucet
-      } else status.faucet = { status: 'N/A' }
+      else
+        status.faucet = {
+          status: 'N/A',
+          response: 'N/A',
+          ethBalance: 'N/A',
+          ethBalanceSufficient: 'N/A',
+          oceanBalance: 'N/A',
+          oceanBalanceSufficient: 'N/A'
+        }
 
       status.provider = await providerStatus(network)
       status.subgraph = await subgraphStatus(network)
