@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { Network } from '../../@types'
+import { Network, SubgraphStatus } from '../../@types'
 import getWeb3Provider from '../utils/ethers'
 import latestRelease from '../utils/github'
 import ethers from 'ethers'
@@ -16,13 +16,15 @@ async function subgraphFetch(network: string, query: string) {
   return response
 }
 
-export default async function subgraphStatus(network: Network) {
+export default async function subgraphStatus(
+  network: Network
+): Promise<SubgraphStatus> {
+  const subgraphStatus: SubgraphStatus = {}
   const query = `{globalStatistics{version} _meta{ block { number } }}`
   const response = await subgraphFetch(network.name, query)
   const data = (await response.json()).data
+  subgraphStatus.block = data._meta.block.number
 
-  const blockCheck =
-    data._meta.block.number + Number(process.env.BLOCK_TOLERANCE)
   let web3Provider: ethers.providers.Provider
   let blockNum: number
 
@@ -31,11 +33,18 @@ export default async function subgraphStatus(network: Network) {
     blockNum = await web3Provider.getBlockNumber()
   }
 
-  const version = data.globalStatistics[0].version
+  subgraphStatus.version = data.globalStatistics[0].version
   const release = await latestRelease('ocean-subgraph')
+  subgraphStatus.response = response.status
 
-  if (response.status === 200 && version === release && blockNum <= blockCheck)
-    return 'UP'
-  else if (response.status === 200) return 'WARNING'
-  else return 'DOWN'
+  if (
+    subgraphStatus.response === 200 &&
+    subgraphStatus.version === release &&
+    blockNum <= subgraphStatus.block + Number(process.env.BLOCK_TOLERANCE)
+  )
+    subgraphStatus.status = 'UP'
+  else if (response.status === 200) subgraphStatus.status = 'WARNING'
+  else subgraphStatus.status = 'DOWN'
+
+  return subgraphStatus
 }

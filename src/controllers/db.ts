@@ -18,7 +18,10 @@ export async function connection() {
             `CREATE TABLE IF NOT EXISTS statusHistory(
               aquarius text, 
               provider text, 
-              subgraph text, 
+              subgraphStatus text, 
+              subgraphResponse number
+              subgraphVersion string
+              subgraphBlock number
               market text, 
               port text,
               faucet text,
@@ -61,7 +64,10 @@ export async function insert(status: Status) {
       `INSERT INTO statusHistory(
         aquarius, 
         provider, 
-        subgraph, 
+        subgraphStatus, 
+        subgraphResponse,
+        subgraphVersion,
+        subgraphBlock,
         market, 
         port,
         faucet,
@@ -71,11 +77,14 @@ export async function insert(status: Status) {
         faucetOceanBalance,
         oceanBalanceSufficient,
         lastUpdatedOn
-        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         status.aquarius,
         status.provider,
-        status.subgraph,
+        status.subgraph.status,
+        status.subgraph.response,
+        status.subgraph.version,
+        status.subgraph.block,
         status.market,
         status.port,
         status.faucet.status,

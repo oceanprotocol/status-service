@@ -4,15 +4,21 @@ export interface Status {
   network: string
   aquarius?: 'UP' | 'DOWN' | 'WARNING'
   provider?: 'UP' | 'DOWN' | 'WARNING'
-  subgraph?: 'UP' | 'DOWN' | 'WARNING'
+  subgraph?: SubgraphStatus
   market?: 'UP' | 'DOWN'
   port?: 'UP' | 'DOWN'
   faucet?: FaucetStatus
   operatorEngine?: string
 }
 
+export interface SubgraphStatus {
+  status?: 'UP' | 'DOWN' | 'WARNING'
+  response?: number
+  version?: string
+  block?: number
+}
 export interface FaucetStatus {
-  status?: 'UP' | 'DOWN' | 'N/A'
+  status?: 'UP' | 'DOWN' | 'WARNING' | 'N/A'
   response?: number | 'N/A'
   ethBalance?: BigNumber | 'N/A'
   ethBalanceSufficient?: boolean | 'N/A'
