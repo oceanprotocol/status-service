@@ -17,11 +17,11 @@ export async function connection() {
           db.run(
             `CREATE TABLE IF NOT EXISTS statusHistory(
               aquarius text, 
-              provider text, 
+              provider text,
               subgraphStatus text, 
-              subgraphResponse number
-              subgraphVersion string
-              subgraphBlock number
+              subgraphResponse number,
+              subgraphVersion text,
+              subgraphBlock number,
               market text, 
               port text,
               faucet text,

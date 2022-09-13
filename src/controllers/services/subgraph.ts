@@ -16,13 +16,74 @@ async function subgraphFetch(network: string, query: string) {
   return response
 }
 
+const query = `{
+    globalStatistics{version}
+    _meta{ block { number } }
+    nfts{
+      id,
+      symbol,
+      name,
+      tokenUri,
+      owner,
+      creator,
+      address,
+      providerUrl,
+      assetState,
+      managerRole,
+      erc20DeployerRole,
+      storeUpdateRole,
+      metadataRole,
+      template,
+      transferable,
+      createdTimestamp,
+      tx,
+      block,
+      orderCount
+    }
+    fixedRateExchanges{
+      id
+      contract
+      exchangeId
+      owner {
+        id
+      }
+      datatoken {
+        id
+      }
+      baseToken {
+        id
+      }
+      datatokenSupply
+      baseTokenSupply
+      datatokenBalance
+      baseTokenBalance
+      price
+      active
+      totalSwapValue
+      allowedSwapper
+      withMint
+      isMinter
+      updates {
+        id
+      }
+      swaps {
+        id
+      }
+      createdTimestamp
+      tx
+      block
+      publishMarketFeeAddress
+      publishMarketSwapFee
+    }
+  }`
+
 export default async function subgraphStatus(
   network: Network
 ): Promise<SubgraphStatus> {
   const subgraphStatus: SubgraphStatus = {}
-  const query = `{globalStatistics{version} _meta{ block { number } }}`
   const response = await subgraphFetch(network.name, query)
   const data = (await response.json()).data
+  console.log(data)
   subgraphStatus.block = data._meta.block.number
 
   let web3Provider: ethers.providers.Provider
