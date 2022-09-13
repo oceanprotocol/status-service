@@ -13,9 +13,9 @@ export interface Status {
 
 export interface FaucetStatus {
   status?: 'UP' | 'DOWN' | 'N/A'
-  response?: number
-  ethBalance?: BigNumber
-  ethBalanceSufficient?: boolean
-  oceanBalance?: BigNumber
-  oceanBalanceSufficient?: boolean
+  response?: number | 'N/A'
+  ethBalance?: BigNumber | 'N/A'
+  ethBalanceSufficient?: boolean | 'N/A'
+  oceanBalance?: BigNumber | 'N/A'
+  oceanBalanceSufficient?: boolean | 'N/A'
 }
