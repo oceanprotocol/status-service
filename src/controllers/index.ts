@@ -8,7 +8,7 @@ import portStatus from './services/port'
 import providerStatus from './services/provider'
 import subgraphStatus from './services/subgraph'
 import faucetStatus from './services/faucet'
-import { FaucetStatus, Status } from '../@types/index'
+import { Status, Network } from '../@types/index'
 
 export default async function monitor(res: Response) {
   const networks = JSON.parse(process.env.NETWORKS)
@@ -17,16 +17,11 @@ export default async function monitor(res: Response) {
   const aquarius = await aquariusStatus()
   try {
     for (let i = 0; i < networks.length; i++) {
-      const network = networks[i].name
-      const status: Status = { network }
+      const network: Network = networks[i]
+      const status: Status = { network: network.name }
 
       if (networks[i].test && networks[i].infuraId)
-        status.faucet = await faucetStatus(
-          network,
-          networks[i].faucetWallet,
-          networks[i].infuraId,
-          networks[i].oceanAddress
-        )
+        status.faucet = await faucetStatus(network)
       else
         status.faucet = {
           status: 'N/A',
@@ -37,7 +32,7 @@ export default async function monitor(res: Response) {
           oceanBalanceSufficient: 'N/A'
         }
 
-      status.provider = await providerStatus(network)
+      status.provider = await providerStatus(network.name)
       status.subgraph = await subgraphStatus(network)
       status.market = market
       status.port = port

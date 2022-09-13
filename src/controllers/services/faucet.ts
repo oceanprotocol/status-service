@@ -1,21 +1,19 @@
 import { ethers, BigNumber } from 'ethers'
 import fetch from 'cross-fetch'
-import { FaucetStatus } from '../../@types'
+import { FaucetStatus, Network } from '../../@types'
+import getWeb3Provider from '../utils/ethers'
 import abi from '../../abi/token.json'
 
 export default async function faucetStatus(
-  network: string,
-  faucetAddress: string,
-  infuraId: string,
-  oceanAddress: string
+  network: Network
 ): Promise<FaucetStatus> {
   const status: FaucetStatus = {}
 
-  if (network === 'mumbai') network = 'maticmum'
-  const provider = new ethers.providers.InfuraProvider(network, infuraId)
+  if (network.name === 'mumbai') network.name = 'maticmum'
+  const web3Provider = getWeb3Provider(network)
 
   // Check Faucet ETH Balance for gas
-  status.ethBalance = await provider.getBalance(faucetAddress)
+  status.ethBalance = await web3Provider.getBalance(network.faucetWallet)
   const minEth = BigNumber.from(process.env.MIN_FAUCET_ETH)
 
   if (minEth.gt(status.ethBalance)) {
@@ -23,8 +21,8 @@ export default async function faucetStatus(
   } else status.ethBalanceSufficient = true
 
   // Check Faucet OCEAN Balance
-  const contract = new ethers.Contract(oceanAddress, abi, provider)
-  status.oceanBalance = await contract.balanceOf(faucetAddress)
+  const contract = new ethers.Contract(network.oceanAddress, abi, web3Provider)
+  status.oceanBalance = await contract.balanceOf(network.faucetWallet)
   const minOcean = BigNumber.from(process.env.MIN_FAUCET_OCEAN)
 
   if (minOcean.gt(status.oceanBalance)) {
@@ -33,7 +31,7 @@ export default async function faucetStatus(
 
   // Check that faucet is responding with 200
   status.response = (
-    await fetch(`https://faucet.${network}.oceanprotocol.com/`)
+    await fetch(`https://faucet.${network.name}.oceanprotocol.com/`)
   ).status
 
   if (

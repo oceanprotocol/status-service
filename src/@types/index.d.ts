@@ -19,3 +19,11 @@ export interface FaucetStatus {
   oceanBalance?: BigNumber | 'N/A'
   oceanBalanceSufficient?: boolean | 'N/A'
 }
+
+export interface Network {
+  name: string
+  test?: boolean
+  faucetWallet?: string
+  infuraId?: string
+  oceanAddress?: string
+}
