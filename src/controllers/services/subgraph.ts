@@ -19,6 +19,42 @@ async function subgraphFetch(network: string, query: string) {
 const query = `{
     globalStatistics{version}
     _meta{ block { number } }
+    users{    
+      id
+      tokenBalancesOwned {id}
+      orders {id}
+      freSwaps {id}
+      totalOrders
+      totalSales
+      __typename
+    }
+    tokens{    
+      id,
+      symbol,
+      name,
+      decimals,
+      address,
+      cap,
+      supply,
+      isDatatoken,
+      nft {id},
+      minter,
+      paymentManager,
+      paymentCollector,
+      publishMarketFeeAddress,
+      publishMarketFeeAmount,
+      templateId,
+      holderCount,
+      orderCount,
+      orders {id},
+      fixedRateExchanges {id},
+      dispensers {id},
+      createdTimestamp,
+      tx,
+      block,
+      lastPriceToken,
+      lastPriceValue
+    }
     nfts{
       id,
       symbol,
@@ -83,7 +119,6 @@ export default async function subgraphStatus(
   const subgraphStatus: SubgraphStatus = {}
   const response = await subgraphFetch(network.name, query)
   const data = (await response.json()).data
-  console.log(data)
   subgraphStatus.block = data._meta.block.number
 
   let web3Provider: ethers.providers.Provider
@@ -99,13 +134,15 @@ export default async function subgraphStatus(
   subgraphStatus.response = response.status
 
   if (
-    subgraphStatus.response === 200 &&
-    subgraphStatus.version === release &&
-    blockNum <= subgraphStatus.block + Number(process.env.BLOCK_TOLERANCE)
+    subgraphStatus.response !== 200 &&
+    blockNum >= subgraphStatus.block + Number(process.env.BLOCK_TOLERANCE) &&
+    data.users.length < 1 &&
+    data.tokens.length < 1 &&
+    data.nfts.length < 1
   )
-    subgraphStatus.status = 'UP'
-  else if (response.status === 200) subgraphStatus.status = 'WARNING'
-  else subgraphStatus.status = 'DOWN'
+    subgraphStatus.status = 'DOWN'
+  else if (release !== subgraphStatus.version) subgraphStatus.status = 'WARNING'
+  else subgraphStatus.status = 'UP'
 
   return subgraphStatus
 }
