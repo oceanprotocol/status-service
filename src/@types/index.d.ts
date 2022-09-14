@@ -3,12 +3,18 @@ import { BigNumber } from 'ethers'
 export interface Status {
   network: string
   aquarius?: 'UP' | 'DOWN' | 'WARNING'
-  provider?: 'UP' | 'DOWN' | 'WARNING'
+  provider?: ProviderStatus
   subgraph?: SubgraphStatus
   market?: 'UP' | 'DOWN'
   port?: 'UP' | 'DOWN'
   faucet?: FaucetStatus
   operatorEngine?: string
+}
+export interface ProviderStatus {
+  status?: 'UP' | 'DOWN' | 'WARNING'
+  response?: number
+  version?: string
+  block?: number
 }
 
 export interface SubgraphStatus {
