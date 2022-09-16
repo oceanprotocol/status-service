@@ -10,7 +10,6 @@ const fileInfoBody = `{
 }`
 
 function initializeInfo(network: string): { did: string; serviceId: string } {
-  console.log('switch network:', network)
   switch (network) {
     case 'mainnet':
       return {
@@ -34,6 +33,12 @@ function initializeInfo(network: string): { did: string; serviceId: string } {
         did: '77367b084ada384062c09021bcd14aced2537f708eee59990f14220e19829586',
         serviceId:
           '5fe2fdf638b71126ce7fba10ca8713cf046d0506f305f4d75747ab628cbbc73c'
+      }
+    case 'moonriver':
+      return {
+        did: 'a3aa14de333ee1ecb3b8a842954033c1c0004f9e77020cacb861843478c1079c',
+        serviceId:
+          'e02fda4094bb3c06bdbe1b300adb137922e77a82ab818595f6f3d3b38cc1a885'
       }
     case 'ropsten':
       return {
@@ -89,23 +94,18 @@ export default async function providerStatus(
   const release = await latestRelease('provider')
 
   const fileInfo = (await providerRequest(network, 'fileinfo', fileInfoBody))[0]
-  const didString = initializeInfo(network)
-  console.log('\n\n didString:', didString)
-  if (initializeInfo(network)) {
-    const initialize = await fetch(
-      `https://v4.provider.${network}.oceanprotocol.com/api/services/initialize?documentId=did:op:${
-        initializeInfo(network).did
-      }&serviceId=${
-        initializeInfo(network).serviceId
-      }&fileIndex=0&consumerAddress=0x0000000000000000000000000000000000000000`
-    )
-    const initializeResponse = await initialize.json()
-    console.log('datatoken', initializeResponse.datatoken)
-    const validDt = ethers.utils.isAddress(initializeResponse.datatoken)
-    console.log('valid DT', validDt)
-  }
+  const initialize = await fetch(
+    `https://v4.provider.${network}.oceanprotocol.com/api/services/initialize?documentId=did:op:${
+      initializeInfo(network).did
+    }&serviceId=${
+      initializeInfo(network).serviceId
+    }&fileIndex=0&consumerAddress=0x0000000000000000000000000000000000000000`
+  )
+  const initializeResponse = await initialize.json()
+  const validDt = ethers.utils.isAddress(initializeResponse.datatoken)
 
-  if (response.status !== 200 && !fileInfo.valid) providerStatus.status = 'DOWN'
+  if (response.status !== 200 && !fileInfo.valid && !validDt)
+    providerStatus.status = 'DOWN'
   else if (providerStatus.version !== release) providerStatus.status = 'WARNING'
   else providerStatus.status = 'UP'
 
