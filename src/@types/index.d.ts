@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers'
 
 export interface Status {
   network: string
-  aquarius?: 'UP' | 'DOWN' | 'WARNING'
+  aquarius?: AquariusStatus
   provider?: ProviderStatus
   subgraph?: SubgraphStatus
   market?: 'UP' | 'DOWN'
@@ -17,6 +17,13 @@ export interface ProviderStatus {
   block?: number
 }
 
+export interface AquariusStatus {
+  status?: 'UP' | 'DOWN' | 'WARNING'
+  chain?: boolean
+  response?: number
+  version?: string
+  block?: number
+}
 export interface SubgraphStatus {
   status?: 'UP' | 'DOWN' | 'WARNING'
   response?: number
@@ -34,6 +41,7 @@ export interface FaucetStatus {
 
 export interface Network {
   name: string
+  chainId: string
   test?: boolean
   faucetWallet?: string
   infuraId?: string

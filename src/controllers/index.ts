@@ -14,7 +14,6 @@ export default async function monitor(res: Response) {
   const networks = JSON.parse(process.env.NETWORKS)
   const market = await marketStatus()
   const port = await portStatus()
-  const aquarius = await aquariusStatus()
   try {
     for (let i = 0; i < networks.length; i++) {
       const network: Network = networks[i]
@@ -36,7 +35,7 @@ export default async function monitor(res: Response) {
       status.subgraph = await subgraphStatus(network)
       status.market = market
       status.port = port
-      status.aquarius = aquarius
+      status.aquarius = await aquariusStatus(network)
       console.log({ status })
       // Update DB
       await insert(status)
