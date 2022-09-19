@@ -3,6 +3,50 @@ import { AquariusStatus, Network } from '../../@types'
 import latestRelease from '../utils/github'
 import { getBlock } from '../utils/ethers'
 
+async function aquariusQuery(chainId: string): Promise<boolean> {
+  const responcse = await fetch(
+    `https://v4.aquarius.oceanprotocol.com/api/aquarius/assets/query`,
+    {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: `{
+        "from": 0,
+        "size": 9,
+        "query": {
+            "bool": {
+                "filter": [
+                    {
+                        "terms": {
+                            "chainId": [
+                                ${chainId}
+                            ]
+                        }
+                    },
+                    {
+                        "term": {
+                            "_index": "aquarius"
+                        }
+                    },
+                    {
+                        "term": {
+                            "purgatory.state": false
+                        }
+                    }
+                ]
+            }
+        },
+        "sort": {
+            "stats.orders": "desc"
+        }
+      }`
+    }
+  )
+  const data = await responcse.json()
+
+  if (data.hits.hits.length > 0) return true
+  else return false
+}
+
 export default async function aquariusStatus(
   network: Network
 ): Promise<AquariusStatus> {
@@ -29,7 +73,10 @@ export default async function aquariusStatus(
     blockNum = await getBlock(network)
   }
 
-  if (status.response !== 200 || !status.chain) status.status = 'DOWN'
+  const validQuery = await aquariusQuery(network.chainId)
+
+  if (status.response !== 200 || !status.chain || validQuery)
+    status.status = 'DOWN'
   else if (
     status.version !== release ||
     !status.chain ||
