@@ -14,3 +14,9 @@ export default function getWeb3Provider(
   )
   return provider
 }
+
+export async function getBlock(network: Network): Promise<number> {
+  const web3Provider = getWeb3Provider(network)
+  const blockNum = await web3Provider.getBlockNumber()
+  return blockNum
+}

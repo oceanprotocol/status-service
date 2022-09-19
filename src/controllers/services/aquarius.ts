@@ -1,34 +1,41 @@
 import fetch from 'cross-fetch'
-import { Network, AquariusStatus } from '../../@types'
+import { AquariusStatus, Network } from '../../@types'
 import latestRelease from '../utils/github'
-
-async function checkChains(chainId: string): Promise<boolean> {
-  try {
-    const response = await fetch(
-      'https://v4.aquarius.oceanprotocol.com/api/aquarius/chains/list'
-    )
-    const networks = await response.json()
-    return networks[chainId]
-  } catch (error) {
-    console.log('error', error)
-  }
-
-  return true
-}
+import { getBlock } from '../utils/ethers'
 
 export default async function aquariusStatus(
   network: Network
 ): Promise<AquariusStatus> {
   const status: AquariusStatus = {}
-  status.chain = await checkChains(network.chainId)
 
   const response = await fetch('https://v4.aquarius.oceanprotocol.com/')
   status.response = response.status
   status.version = (await response.json()).version
   const release = await latestRelease('aquarius')
 
+  const chainResponse = await fetch(
+    'https://v4.aquarius.oceanprotocol.com/api/aquarius/chains/list'
+  )
+  status.chain = (await chainResponse.json())[network.chainId]
+
+  const chainStatus = await fetch(
+    `https://v4.aquarius.oceanprotocol.com/api/aquarius/chains/status/${network.chainId}`
+  )
+
+  status.block = (await chainStatus.json()).last_block
+
+  let blockNum: number
+  if (network.name && network.infuraId) {
+    blockNum = await getBlock(network)
+  }
+
   if (status.response !== 200 || !status.chain) status.status = 'DOWN'
-  else if (status.version !== release) status.status = 'WARNING'
+  else if (
+    status.version !== release ||
+    !status.chain ||
+    blockNum >= status.block + Number(process.env.BLOCK_TOLERANCE)
+  )
+    status.status = 'WARNING'
   else status.status = 'UP'
   return status
 }
