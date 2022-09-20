@@ -55,7 +55,7 @@ export default async function aquariusStatus(
   const response = await fetch('https://v4.aquarius.oceanprotocol.com/')
   status.response = response.status
   status.version = (await response.json()).version
-  const release = await latestRelease('aquarius')
+  status.latestRelease = await latestRelease('aquarius')
 
   const chainResponse = await fetch(
     'https://v4.aquarius.oceanprotocol.com/api/aquarius/chains/list'
@@ -68,19 +68,18 @@ export default async function aquariusStatus(
 
   status.block = (await chainStatus.json()).last_block
 
-  let blockNum: number
   if (network.name && network.infuraId) {
-    blockNum = await getBlock(network)
+    status.latestBlock = await getBlock(network)
   }
 
-  const validQuery = await aquariusQuery(network.chainId)
+  status.validQuery = await aquariusQuery(network.chainId)
 
-  if (status.response !== 200 || !status.chain || validQuery)
+  if (status.response !== 200 || !status.chain || !status.validQuery)
     status.status = 'DOWN'
   else if (
-    status.version !== release ||
+    status.version !== status.latestRelease ||
     !status.chain ||
-    blockNum >= status.block + Number(process.env.BLOCK_TOLERANCE)
+    status.latestBlock >= status.block + Number(process.env.BLOCK_TOLERANCE)
   )
     status.status = 'WARNING'
   else status.status = 'UP'

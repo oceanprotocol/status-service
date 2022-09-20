@@ -14,7 +14,9 @@ export interface ProviderStatus {
   status?: 'UP' | 'DOWN' | 'WARNING'
   response?: number
   version?: string
+  latestRelease?: string
   block?: number
+  latestBlock?: number
 }
 
 export interface AquariusStatus {
@@ -22,13 +24,18 @@ export interface AquariusStatus {
   chain?: boolean
   response?: number
   version?: string
+  latestRelease?: string
   block?: number
+  latestBlock?: number
+  validQuery?: boolean
 }
 export interface SubgraphStatus {
   status?: 'UP' | 'DOWN' | 'WARNING'
   response?: number
   version?: string
+  latestRelease?: string
   block?: number
+  latestBlock?: number
 }
 export interface FaucetStatus {
   status?: 'UP' | 'DOWN' | 'WARNING' | 'N/A'

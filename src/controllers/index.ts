@@ -36,7 +36,8 @@ export default async function monitor(res: Response) {
       status.market = market
       status.port = port
       status.aquarius = await aquariusStatus(network)
-      console.log({ status })
+
+      console.log('Aquarius Status: ', status.aquarius)
       // Update DB
       await insert(status)
     }
