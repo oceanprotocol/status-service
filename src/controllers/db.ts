@@ -16,7 +16,11 @@ export async function connection() {
           console.log('Connected to database')
           db.run(
             `CREATE TABLE IF NOT EXISTS statusHistory(
-              aquarius text, 
+              aquariusStatus text,
+              aquariusResponse text,
+              aquariusVersion text,
+              aquariusLatestRelease text,
+              aquariusBlock text,
               providerStatus text, 
               providerResponse number,
               providerVersion text,
@@ -64,7 +68,11 @@ export async function insert(status: Status) {
   try {
     db.run(
       `INSERT INTO statusHistory(
-        aquarius, 
+        aquariusStatus,
+        aquariusResponse,
+        aquariusVersion,
+        aquariusLatestRelease,
+        aquariusBlock,
         providerStatus, 
         providerResponse,
         providerVersion,
@@ -81,9 +89,13 @@ export async function insert(status: Status) {
         faucetOceanBalance,
         oceanBalanceSufficient,
         lastUpdatedOn
-        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        status.aquarius,
+        status.aquarius.status,
+        status.aquarius.response,
+        status.aquarius.version,
+        status.aquarius.latestRelease,
+        status.aquarius.block,
         status.provider.status,
         status.provider.response,
         status.provider.version,
