@@ -21,8 +21,8 @@ export interface ProviderStatus {
 
 export interface AquariusStatus {
   status?: 'UP' | 'DOWN' | 'WARNING'
-  chain?: boolean
   response?: number
+  chain?: boolean
   version?: string
   latestRelease?: string
   block?: number
