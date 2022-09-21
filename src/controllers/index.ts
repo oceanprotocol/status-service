@@ -8,12 +8,14 @@ import portStatus from './services/port'
 import providerStatus from './services/provider'
 import subgraphStatus from './services/subgraph'
 import faucetStatus from './services/faucet'
+import dfStatus from './services/dataFarming'
 import { Status, Network } from '../@types/index'
 
 export default async function monitor(res: Response) {
   const networks = JSON.parse(process.env.NETWORKS)
   const market = await marketStatus()
   const port = await portStatus()
+  const dataFarming = await dfStatus()
   try {
     for (let i = 0; i < networks.length; i++) {
       const network: Network = networks[i]
@@ -35,6 +37,7 @@ export default async function monitor(res: Response) {
       status.subgraph = await subgraphStatus(network)
       status.market = market
       status.port = port
+      status.dataFarming = dataFarming
       status.aquarius = await aquariusStatus(network)
 
       console.log('Aquarius Status: ', status.aquarius)

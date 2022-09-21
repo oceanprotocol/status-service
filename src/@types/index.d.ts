@@ -9,6 +9,7 @@ export interface Status {
   port?: 'UP' | 'DOWN'
   faucet?: FaucetStatus
   operatorEngine?: string
+  dataFarming?: 'UP' | 'DOWN'
 }
 export interface ProviderStatus {
   status?: 'UP' | 'DOWN' | 'WARNING'
