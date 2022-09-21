@@ -18,7 +18,6 @@ export default async function operatorStatus(
   )
   const environmentData = await environment.json()
   status.environments = environmentData.length
-  console.log('C2D environment Data: ', environmentData)
 
   environmentData.forEach((environment) => {
     if (environment.currentJobs >= environment.maxJobs)

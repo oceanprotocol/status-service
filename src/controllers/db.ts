@@ -16,6 +16,7 @@ export async function connection() {
           console.log('Connected to database')
           db.run(
             `CREATE TABLE IF NOT EXISTS statusHistory(
+              network text,
               aquariusStatus text,
               aquariusResponse integer,
               aquariusChain text,
@@ -32,6 +33,12 @@ export async function connection() {
               subgraphVersion text,
               subgraphLatestRelease text,
               subgraphBlock integer,
+              operatorStatus text,
+              operatorResponse integer,
+              operatorVersion text,
+              operatorLatestRelease text,
+              operatorEnvironments integer,
+              operatorLimitReached text,
               market text, 
               port text,
               faucet text,
@@ -51,27 +58,11 @@ export async function connection() {
   }
 }
 
-export async function find(network, callback) {
+export async function networkStatus(network: string): Promise<any> {
   try {
     db.all(
-      `SELECT wallet, lastUpdatedOn FROM statusHistory WHERE network = "${network}" ORDER BY lastUpdatedOn DESC`,
-      [],
-      function (err, row) {
-        if (err) {
-          return console.log(err.message)
-        }
-        callback(row)
-      }
-    )
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-export async function insert(status: Status) {
-  try {
-    db.run(
-      `INSERT INTO statusHistory(
+      `SELECT 
+        network,
         aquariusStatus,
         aquariusResponse,
         aquariusChain,
@@ -88,6 +79,63 @@ export async function insert(status: Status) {
         subgraphVersion,
         subgraphLatestRelease,
         subgraphBlock,
+        operatorStatus,
+        operatorResponse,
+        operatorVersion,
+        operatorLatestRelease,
+        operatorEnvironments,
+        operatorLimitReached,
+        market, 
+        port,
+        faucet,
+        faucetResponse,
+        faucetEthBalance,
+        faucetEthBalanceSufficient,
+        faucetOceanBalance,
+        oceanBalanceSufficient,
+        lastUpdatedOn FROM statusHistory WHERE network = "${network}" ORDER BY lastUpdatedOn DESC`,
+      [],
+      function (err, row) {
+        if (err) {
+          return console.log(err.message)
+        }
+        console.log('row', row)
+        return row
+      }
+    )
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export async function insert(status: Status) {
+  const date = Date.now()
+  try {
+    db.run(
+      `INSERT INTO statusHistory(
+        network,
+        aquariusStatus,
+        aquariusResponse,
+        aquariusChain,
+        aquariusVersion,
+        aquariusLatestRelease,
+        aquariusBlock,
+        aquariusValidQuery,
+        providerStatus, 
+        providerResponse,
+        providerVersion,
+        providerLatestRelease,
+        subgraphStatus, 
+        subgraphResponse,
+        subgraphVersion,
+        subgraphLatestRelease,
+        subgraphBlock,
+        operatorStatus,
+        operatorResponse,
+        operatorVersion,
+        operatorLatestRelease,
+        operatorEnvironments,
+        operatorLimitReached,
         market, 
         port,
         faucet,
@@ -97,8 +145,9 @@ export async function insert(status: Status) {
         faucetOceanBalance,
         oceanBalanceSufficient,
         lastUpdatedOn
-        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
+        status.network,
         status.aquarius.status,
         status.aquarius.response,
         status.aquarius.chain,
@@ -114,6 +163,12 @@ export async function insert(status: Status) {
         status.subgraph.version,
         status.subgraph.latestRelease,
         status.subgraph.block,
+        status.operatorService.status,
+        status.operatorService.response,
+        status.operatorService.version,
+        status.operatorService.latestRelease,
+        status.operatorService.environments,
+        status.operatorService.limitReached,
         status.market,
         status.port,
         status.faucet.status,
@@ -122,7 +177,7 @@ export async function insert(status: Status) {
         status.faucet.oceanBalance,
         status.faucet.oceanBalanceSufficient,
         status.faucet.status,
-        Date.now()
+        1234567890
       ],
       function (err) {
         if (err) {

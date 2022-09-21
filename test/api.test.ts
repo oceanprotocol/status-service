@@ -9,9 +9,27 @@ describe('Price Request Tests', function () {
     request(app).get('/').expect('Content-Type', /json/).expect(200)
   })
 
+  it('Gets the current status of Ocean services on Mainnet', async () => {
+    const response = await request(app)
+      .get('/mainnet')
+      .expect('Content-Type', /json/)
+      .expect(200)
+
+    assert(response.body)
+  })
+
+  it('Gets the current status of Ocean services on Rinkeby', async () => {
+    const response = await request(app)
+      .get('/rinkeby')
+      .expect('Content-Type', /json/)
+      .expect(200)
+
+    assert(response.body)
+  })
+
   it('Monitors the current status of OCEAN', async () => {
     const response = await request(app)
-      .get('/monitor')
+      .get('/')
       .expect('Content-Type', /json/)
       .expect(200)
 
@@ -19,14 +37,5 @@ describe('Price Request Tests', function () {
       response.body.response === 'Database has been updated',
       'Failed to monitor services and update DB'
     )
-  })
-
-  it('Gets the current status of Ocean services', async () => {
-    const response = await request(app)
-      .get('/')
-      .expect('Content-Type', /json/)
-      .expect(200)
-
-    assert(response.body)
   })
 })
