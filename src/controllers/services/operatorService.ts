@@ -30,7 +30,11 @@ export default async function operatorStatus(
     status.environments < Number(process.env.C2D_ENVIRONMENTS)
   )
     status.status = 'DOWN'
-  else if (status.version !== status.latestRelease) status.status = 'WARNING'
+  else if (
+    status.version !== status.latestRelease ||
+    status.limitReached === true
+  )
+    status.status = 'WARNING'
   else status.status = 'UP'
 
   return status
