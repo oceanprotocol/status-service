@@ -65,3 +65,38 @@ export interface Network {
   infuraId?: string
   oceanAddress?: string
 }
+
+export interface dbRow {
+  network: string
+  aquariusStatus: string
+  aquariusResponse: number
+  aquariusChain: number
+  aquariusVersion: string
+  aquariusLatestRelease: string
+  aquariusBlock: number
+  aquariusValidQuery: number
+  providerStatus: string
+  providerResponse: null
+  providerVersion: string
+  providerLatestRelease: string
+  subgraphStatus: string
+  subgraphResponse: number
+  subgraphVersion: string
+  subgraphLatestRelease: null
+  subgraphBlock: number
+  operatorStatus: string
+  operatorResponse: number
+  operatorVersion: string
+  operatorLatestRelease: string
+  operatorEnvironments: number
+  operatorLimitReached: number
+  market: string
+  port: string
+  faucet: string
+  faucetResponse: string
+  faucetEthBalance: string
+  faucetEthBalanceSufficient: number | string
+  faucetOceanBalance: string
+  faucetOceanBalanceSufficient: number | string
+  lastUpdatedOn: number
+}

@@ -45,7 +45,6 @@ export default async function monitor(res: Response) {
       status.dataFarming = dataFarming
       status.daoGrants = daoGrants
 
-      console.log('Status: ', status)
       // Update DB
       await insert(status)
     }

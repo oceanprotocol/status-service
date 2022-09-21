@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import sqlite3 from 'sqlite3'
 import { Status } from '../@types/index'
+import { dbRow } from '../@types/index'
 
 let db
 
@@ -13,17 +14,16 @@ export async function connection() {
         if (err) {
           return console.log('Could not connect to database', err)
         } else {
-          console.log('Connected to database')
           db.run(
             `CREATE TABLE IF NOT EXISTS statusHistory(
               network text,
               aquariusStatus text,
               aquariusResponse integer,
-              aquariusChain text,
+              aquariusChain number,
               aquariusVersion text,
               aquariusLatestRelease text,
               aquariusBlock integer,
-              aquariusValidQuery text,
+              aquariusValidQuery number,
               providerStatus text, 
               providerResponse integer,
               providerVersion text,
@@ -38,7 +38,7 @@ export async function connection() {
               operatorVersion text,
               operatorLatestRelease text,
               operatorEnvironments integer,
-              operatorLimitReached text,
+              operatorLimitReached number,
               market text, 
               port text,
               faucet text,
@@ -46,10 +46,11 @@ export async function connection() {
               faucetEthBalance text,
               faucetEthBalanceSufficient text,
               faucetOceanBalance text,
-              oceanBalanceSufficient text,
+              faucetOceanBalanceSufficient text,
               lastUpdatedOn integer
               )`
-          )
+          ),
+            console.log('Connected to database')
         }
       }
     )
@@ -58,7 +59,10 @@ export async function connection() {
   }
 }
 
-export async function networkStatus(network: string): Promise<any> {
+export async function networkStatus(
+  network: string,
+  callback: (row: dbRow) => void
+) {
   try {
     db.all(
       `SELECT 
@@ -92,15 +96,14 @@ export async function networkStatus(network: string): Promise<any> {
         faucetEthBalance,
         faucetEthBalanceSufficient,
         faucetOceanBalance,
-        oceanBalanceSufficient,
+        faucetOceanBalanceSufficient,
         lastUpdatedOn FROM statusHistory WHERE network = "${network}" ORDER BY lastUpdatedOn DESC`,
       [],
       function (err, row) {
         if (err) {
           return console.log(err.message)
         }
-        console.log('row', row)
-        return row
+        callback(row[0])
       }
     )
   } catch (err) {
@@ -143,7 +146,7 @@ export async function insert(status: Status) {
         faucetEthBalance,
         faucetEthBalanceSufficient,
         faucetOceanBalance,
-        oceanBalanceSufficient,
+        faucetOceanBalanceSufficient,
         lastUpdatedOn
         ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
