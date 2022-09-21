@@ -18,9 +18,9 @@ describe('Price Request Tests', function () {
     assert(response.body)
   })
 
-  it('Gets the current status of Ocean services on Rinkeby', async () => {
+  it('Gets the current status of Ocean services on Polygon', async () => {
     const response = await request(app)
-      .get('/rinkeby')
+      .get('/polygon')
       .expect('Content-Type', /json/)
       .expect(200)
 

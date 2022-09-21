@@ -109,7 +109,7 @@ export async function networkStatus(network: string): Promise<any> {
 }
 
 export async function insert(status: Status) {
-  const date = Date.now()
+  // const date = Date.now()
   try {
     db.run(
       `INSERT INTO statusHistory(
@@ -154,6 +154,7 @@ export async function insert(status: Status) {
         status.aquarius.version,
         status.aquarius.latestRelease,
         status.aquarius.block,
+        status.aquarius.validQuery,
         status.provider.status,
         status.provider.response,
         status.provider.version,
@@ -177,7 +178,7 @@ export async function insert(status: Status) {
         status.faucet.oceanBalance,
         status.faucet.oceanBalanceSufficient,
         status.faucet.status,
-        1234567890
+        Date.now()
       ],
       function (err) {
         if (err) {
