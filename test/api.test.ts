@@ -3,7 +3,7 @@ import { assert } from 'chai'
 import app from '../src/app'
 
 describe('Price Request Tests', function () {
-  this.timeout(200000)
+  this.timeout(240000)
 
   it('Starts the server', async () => {
     request(app).get('/').expect('Content-Type', /json/).expect(200)

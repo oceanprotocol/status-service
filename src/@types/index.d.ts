@@ -10,6 +10,7 @@ export interface Status {
   faucet?: FaucetStatus
   operatorEngine?: string
   dataFarming?: 'UP' | 'DOWN'
+  daoGrants?: 'UP' | 'DOWN'
 }
 export interface ProviderStatus {
   status?: 'UP' | 'DOWN' | 'WARNING'

@@ -9,6 +9,7 @@ import providerStatus from './services/provider'
 import subgraphStatus from './services/subgraph'
 import faucetStatus from './services/faucet'
 import dfStatus from './services/dataFarming'
+import grantsStatus from './services/daoGrants'
 import { Status, Network } from '../@types/index'
 
 export default async function monitor(res: Response) {
@@ -16,6 +17,7 @@ export default async function monitor(res: Response) {
   const market = await marketStatus()
   const port = await portStatus()
   const dataFarming = await dfStatus()
+  const daoGrants = await grantsStatus()
   try {
     for (let i = 0; i < networks.length; i++) {
       const network: Network = networks[i]
@@ -35,12 +37,13 @@ export default async function monitor(res: Response) {
 
       status.provider = await providerStatus(network.name)
       status.subgraph = await subgraphStatus(network)
+      status.aquarius = await aquariusStatus(network)
       status.market = market
       status.port = port
       status.dataFarming = dataFarming
-      status.aquarius = await aquariusStatus(network)
+      status.daoGrants = daoGrants
 
-      console.log('Aquarius Status: ', status.aquarius)
+      console.log('Status: ', status)
       // Update DB
       await insert(status)
     }
