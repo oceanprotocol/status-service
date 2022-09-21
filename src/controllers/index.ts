@@ -7,6 +7,7 @@ import marketStatus from './services/market'
 import portStatus from './services/port'
 import providerStatus from './services/provider'
 import subgraphStatus from './services/subgraph'
+import operatorStatus from './services/operatorService'
 import faucetStatus from './services/faucet'
 import dfStatus from './services/dataFarming'
 import grantsStatus from './services/daoGrants'
@@ -38,6 +39,7 @@ export default async function monitor(res: Response) {
       status.provider = await providerStatus(network.name)
       status.subgraph = await subgraphStatus(network)
       status.aquarius = await aquariusStatus(network)
+      status.operatorService = await operatorStatus(network.chainId)
       status.market = market
       status.port = port
       status.dataFarming = dataFarming

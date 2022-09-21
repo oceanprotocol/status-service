@@ -91,7 +91,7 @@ export default async function providerStatus(
     `https://v4.provider.${network}.oceanprotocol.com/`
   )
   providerStatus.version = (await response.json()).version
-  const release = await latestRelease('provider')
+  providerStatus.latestRelease = await latestRelease('provider')
 
   const fileInfo = (await providerRequest(network, 'fileinfo', fileInfoBody))[0]
   const initialize = await fetch(
@@ -106,7 +106,8 @@ export default async function providerStatus(
 
   if (response.status !== 200 && !fileInfo.valid && !validDt)
     providerStatus.status = 'DOWN'
-  else if (providerStatus.version !== release) providerStatus.status = 'WARNING'
+  else if (providerStatus.version !== providerStatus.latestRelease)
+    providerStatus.status = 'WARNING'
   else providerStatus.status = 'UP'
 
   return providerStatus

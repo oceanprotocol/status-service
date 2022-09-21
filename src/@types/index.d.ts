@@ -8,7 +8,7 @@ export interface Status {
   market?: 'UP' | 'DOWN'
   port?: 'UP' | 'DOWN'
   faucet?: FaucetStatus
-  operatorEngine?: string
+  operatorService?: OperatorStatus
   dataFarming?: 'UP' | 'DOWN'
   daoGrants?: 'UP' | 'DOWN'
 }
@@ -38,6 +38,13 @@ export interface SubgraphStatus {
   latestRelease?: string
   block?: number
   latestBlock?: number
+}
+
+export interface OperatorStatus {
+  status?: 'UP' | 'DOWN' | 'WARNING'
+  response?: number
+  version?: string
+  latestRelease?: string
 }
 export interface FaucetStatus {
   status?: 'UP' | 'DOWN' | 'WARNING' | 'N/A'
