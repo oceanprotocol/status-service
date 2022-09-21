@@ -5,7 +5,7 @@ import { OperatorStatus } from '../../@types'
 export default async function operatorStatus(
   chainId: string
 ): Promise<OperatorStatus> {
-  const status: OperatorStatus = {}
+  const status: OperatorStatus = { limitReached: false }
   const response = await fetch(`https://stagev4.c2d.oceanprotocol.com`)
   const operatorStatus = await response.json()
   status.response = response.status
@@ -17,11 +17,17 @@ export default async function operatorStatus(
     `https://stagev4.c2d.oceanprotocol.com/api/v1/operator/environments?chainId=${chainId}`
   )
   const environmentData = await environment.json()
+  status.environments = environmentData.length
   console.log('C2D environment Data: ', environmentData)
+
+  environmentData.forEach((environment) => {
+    if (environment.currentJobs >= environment.maxJobs)
+      return (status.limitReached = true)
+  })
 
   if (
     status.response !== 200 ||
-    environmentData.length < Number(process.env.C2D_ENVIRONMENTS)
+    status.environments < Number(process.env.C2D_ENVIRONMENTS)
   )
     status.status = 'DOWN'
   else if (status.version !== status.latestRelease) status.status = 'WARNING'

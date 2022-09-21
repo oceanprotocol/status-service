@@ -45,6 +45,8 @@ export interface OperatorStatus {
   response?: number
   version?: string
   latestRelease?: string
+  environments?: number
+  limitReached?: boolean
 }
 export interface FaucetStatus {
   status?: 'UP' | 'DOWN' | 'WARNING' | 'N/A'
