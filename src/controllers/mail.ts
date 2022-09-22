@@ -1,20 +1,9 @@
 import nodemailer from 'nodemailer'
 
-export default async function mail(test?: boolean) {
-  console.log('Mail test: ', true)
-  console.log('Host: ', test ? 'smtp.ethereal.email' : process.env.SMTP_HOST)
+export default async function mail(downApps: string[], test?: boolean) {
   let testAccount
-  if (test === true) testAccount = await nodemailer.createTestAccount()
+  test && (testAccount = await nodemailer.createTestAccount())
 
-  //   const transporter = nodemailer.createTransport({
-  //     host: 'smtp.ethereal.email',
-  //     port: 587,
-  //     secure: false, // true for 465, false for other ports
-  //     auth: {
-  //       user: testAccount.user, // generated ethereal user
-  //       pass: testAccount.pass // generated ethereal password
-  //     }
-  //   })
   const transporter = nodemailer.createTransport({
     host: test ? 'smtp.ethereal.email' : process.env.SMTP_HOST,
     port: test ? 587 : Number(process.env.SMTP_PORT),
@@ -25,13 +14,13 @@ export default async function mail(test?: boolean) {
     }
   })
 
-  // send mail with defined transport object
   const info = await transporter.sendMail({
-    from: '"Fred Foo 👻" <foo@example.com>', // sender address
-    to: process.env.EMAIL, // list of receivers
-    subject: 'Hello ✔', // Subject line
-    text: 'Hello world?', // plain text body
-    html: '<b>Hello world?</b>' // html body
+    from: '"Ocean Status Update 🐋" <status@oceanprotocol.com>', // sender address
+    to: process.env.EMAIL,
+    subject: 'Service Down',
+    text: `The following services are down:\n - ${downApps
+      .toString()
+      .replace(/,/g, '\n- ')}`
   })
 
   console.log('Message sent: %s', info.messageId)

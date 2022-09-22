@@ -12,6 +12,7 @@ import faucetStatus from './services/faucet'
 import dfStatus from './services/dataFarming'
 import grantsStatus from './services/daoGrants'
 import { Status, Network } from '../@types/index'
+import notification from './notification'
 
 export default async function monitor(res: Response) {
   const networks: Network[] = JSON.parse(process.env.NETWORKS)
@@ -46,7 +47,9 @@ export default async function monitor(res: Response) {
       status.daoGrants = daoGrants
 
       // Update DB
-      await insert(status)
+      insert(status)
+      // send notification email
+      notification(status)
     }
 
     res.send({ response: 'Database has been updated' })

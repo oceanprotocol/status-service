@@ -111,7 +111,7 @@ export async function networkStatus(
   }
 }
 
-export async function insert(status: Status) {
+export function insert(status: Status) {
   try {
     db.run(
       `INSERT INTO statusHistory(
