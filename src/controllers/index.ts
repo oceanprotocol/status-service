@@ -14,7 +14,7 @@ import grantsStatus from './services/daoGrants'
 import { Status, Network } from '../@types/index'
 
 export default async function monitor(res: Response) {
-  const networks = JSON.parse(process.env.NETWORKS)
+  const networks: Network[] = JSON.parse(process.env.NETWORKS)
   const market = await marketStatus()
   const port = await portStatus()
   const dataFarming = await dfStatus()
@@ -24,7 +24,7 @@ export default async function monitor(res: Response) {
       const network: Network = networks[i]
       const status: Status = { network: network.name }
 
-      if (networks[i].test && networks[i].infuraId)
+      if (network.faucetWallet && network.infuraId)
         status.faucet = await faucetStatus(network)
       else
         status.faucet = {

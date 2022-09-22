@@ -3,11 +3,16 @@ import { assert } from 'chai'
 import app from '../src/app'
 import { dbRow, Network } from '../src/@types'
 import { getBlock } from '../src/controllers/utils/ethers'
+import mail from '../src/mail'
 
 describe('Price Request Tests', function () {
   this.timeout(240000)
   const networks: Network[] = JSON.parse(process.env.NETWORKS)
   let recentBlock: number
+
+  it('Sends notification email', async () => {
+    await mail(true)
+  })
 
   it('Gets the current status of Ocean services on Mainnet', async () => {
     const response = await request(app)

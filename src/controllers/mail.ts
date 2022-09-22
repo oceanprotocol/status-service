@@ -28,7 +28,7 @@ export default async function mail(test?: boolean) {
   // send mail with defined transport object
   const info = await transporter.sendMail({
     from: '"Fred Foo 👻" <foo@example.com>', // sender address
-    to: 'jamie@oceanprotocol.com', // list of receivers
+    to: process.env.EMAIL, // list of receivers
     subject: 'Hello ✔', // Subject line
     text: 'Hello world?', // plain text body
     html: '<b>Hello world?</b>' // html body
