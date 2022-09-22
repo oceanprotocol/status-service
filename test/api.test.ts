@@ -6,22 +6,6 @@ import { dbRow } from '../src/@types'
 describe('Price Request Tests', function () {
   this.timeout(240000)
 
-  // it('Starts the server', async () => {
-  //   request(app).get('/').expect('Content-Type', /json/).expect(200)
-  // })
-
-  it('Monitors the current status of OCEAN', async () => {
-    const response = await request(app)
-      .get('/')
-      .expect('Content-Type', /json/)
-      .expect(200)
-
-    assert(
-      response.body.response === 'Database has been updated',
-      'Failed to monitor services and update DB'
-    )
-  })
-
   it('Gets the current status of Ocean services on Mainnet', async () => {
     const response = await request(app)
       .get('/mainnet')
@@ -44,5 +28,17 @@ describe('Price Request Tests', function () {
 
     console.log('Mainnet row', row)
     assert(response.body)
+  })
+
+  it('Monitors the current status of OCEAN', async () => {
+    const response = await request(app)
+      .get('/')
+      .expect('Content-Type', /json/)
+      .expect(200)
+
+    assert(
+      response.body.response === 'Database has been updated',
+      'Failed to monitor services and update DB'
+    )
   })
 })

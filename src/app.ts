@@ -15,16 +15,18 @@ app.use('/', indexRouter)
 
 app.listen(port, async () => {
   await connection()
-  console.log(`Price Request App listening at http://localhost:${port}`)
+  console.log(`Status Service listening at http://localhost:${port}`)
 })
 
 cron.schedule(`*/${process.env.INTERVAL} * * * *`, () => {
   const networks = JSON.parse(process.env.NETWORKS)
   networks.forEach((network) => {
-    console.log(
-      `Monitor status for ${network}. Running task every ${process.env.INTERVAL} minutes`
-    )
-    monitor(network)
+    console.log(`
+      Monitor status for ${network.name}.
+      Running task every ${process.env.INTERVAL} minutes. 
+      Current time: ${Date.now()}`)
+
+    monitor(network.name)
   })
 })
 

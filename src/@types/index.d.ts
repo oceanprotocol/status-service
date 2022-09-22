@@ -76,13 +76,13 @@ export interface dbRow {
   aquariusBlock: number
   aquariusValidQuery: number
   providerStatus: string
-  providerResponse: null
+  providerResponse: number
   providerVersion: string
   providerLatestRelease: string
   subgraphStatus: string
   subgraphResponse: number
   subgraphVersion: string
-  subgraphLatestRelease: null
+  subgraphLatestRelease: string
   subgraphBlock: number
   operatorStatus: string
   operatorResponse: number

@@ -126,7 +126,7 @@ export default async function subgraphStatus(
   }
 
   subgraphStatus.version = data.globalStatistics[0].version
-  const release = await latestRelease('ocean-subgraph')
+  subgraphStatus.latestRelease = await latestRelease('ocean-subgraph')
   subgraphStatus.response = response.status
 
   if (
@@ -138,7 +138,7 @@ export default async function subgraphStatus(
     subgraphStatus.status = 'DOWN'
   else if (
     blockNum >= subgraphStatus.block + Number(process.env.BLOCK_TOLERANCE) ||
-    release !== subgraphStatus.version
+    subgraphStatus.version !== subgraphStatus.latestRelease
   )
     subgraphStatus.status = 'WARNING'
   else subgraphStatus.status = 'UP'
