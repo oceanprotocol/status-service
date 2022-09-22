@@ -93,7 +93,6 @@ export default async function providerStatus(
   providerStatus.response = response.status
   providerStatus.version = (await response.json()).version
   providerStatus.latestRelease = await latestRelease('provider')
-  console.log('providerStatus.response', providerStatus.response)
 
   const fileInfo = (await providerRequest(network, 'fileinfo', fileInfoBody))[0]
   const initialize = await fetch(

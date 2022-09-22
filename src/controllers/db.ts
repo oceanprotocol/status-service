@@ -112,9 +112,6 @@ export async function networkStatus(
 }
 
 export async function insert(status: Status) {
-  // const date = Date.now()
-  console.log('status.provider.response', status.provider.response)
-  console.log('status.subgraph.latestRelease', status.subgraph.latestRelease)
   try {
     db.run(
       `INSERT INTO statusHistory(
