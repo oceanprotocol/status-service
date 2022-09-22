@@ -8,10 +8,8 @@ export default function getWeb3Provider(
   if (network.name === 'polygon') network.name = 'matic'
   if (network.name === 'mumbai') network.name = 'maticmum'
 
-  const provider = new ethers.providers.InfuraProvider(
-    network.name,
-    network.infuraId
-  )
+  const provider: ethers.providers.Provider =
+    new ethers.providers.InfuraProvider(network.name, network.infuraId)
   return provider
 }
 
