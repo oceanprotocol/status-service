@@ -3,7 +3,7 @@ import { assert } from 'chai'
 import app from '../src/app'
 import { dbRow, Network } from '../src/@types'
 import { getBlock } from '../src/controllers/utils/ethers'
-import mail from '../src/mail'
+import mail from '../src/controllers/mail'
 
 describe('Price Request Tests', function () {
   this.timeout(240000)
@@ -11,7 +11,7 @@ describe('Price Request Tests', function () {
   let recentBlock: number
 
   it('Sends notification email', async () => {
-    await mail(true)
+    await mail(['market', 'provider', 'port'], true)
   })
 
   it('Gets the current status of Ocean services on Mainnet', async () => {
