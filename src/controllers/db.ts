@@ -1,7 +1,6 @@
 import 'dotenv/config'
 import sqlite3 from 'sqlite3'
-import { Status } from '../@types/index'
-import { dbRow } from '../@types/index'
+import { Status, dbRow, Network } from '../@types/index'
 
 let db
 
@@ -108,6 +107,20 @@ export async function networkStatus(
     )
   } catch (err) {
     console.error(err)
+  }
+}
+
+export async function getStatus(callback: (row: dbRow[]) => void) {
+  const networks: Network[] = JSON.parse(process.env.NETWORKS)
+  const status: dbRow[] = []
+  for (let i = 0; i < networks.length; i++) {
+    const network: string = networks[i].name
+    await networkStatus(network, (row: dbRow) => {
+      status.push(row)
+      if (i === networks.length - 1) {
+        callback(status)
+      }
+    })
   }
 }
 
