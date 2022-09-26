@@ -14,9 +14,18 @@ describe('Price Request Tests', function () {
     await mail(['market', 'provider', 'port'], true)
   })
 
+  it('Monitors the current status of OCEAN', async () => {
+    const response = await request(app).get('/forceUpdate').expect(200)
+    console.log('response', response.body.response)
+    assert(
+      response.body.response === 'Database has been updated',
+      'Failed to monitor services and update DB'
+    )
+  })
+
   it('Gets the current status of Ocean services on Mainnet', async () => {
     const response = await request(app)
-      .get('/mainnet')
+      .get('/network/mainnet')
       .expect('Content-Type', /json/)
       .expect(200)
     const row: dbRow = response.body
@@ -104,7 +113,7 @@ describe('Price Request Tests', function () {
 
   it('Gets the current status of Ocean services on Polygon', async () => {
     const response = await request(app)
-      .get('/polygon')
+      .get('/network/polygon')
       .expect('Content-Type', /json/)
       .expect(200)
 
@@ -187,18 +196,6 @@ describe('Price Request Tests', function () {
     assert(
       row.lastUpdatedOn > Date.now() - 50000000,
       'Invalid lastUpdatedOn for Polygon'
-    )
-  })
-
-  it('Monitors the current status of OCEAN', async () => {
-    const response = await request(app)
-      .get('/forceUpdate')
-      .expect('Content-Type', /json/)
-      .expect(200)
-
-    assert(
-      response.body.response === 'Database has been updated',
-      'Failed to monitor services and update DB'
     )
   })
 })

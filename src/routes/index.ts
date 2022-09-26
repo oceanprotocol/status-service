@@ -8,21 +8,23 @@ const router = express.Router()
 
 /* GET: current status of Ocean components on all networks. */
 router.get('/', async function (req: Request, res: Response) {
+  console.log('Start 123')
   await getStatus((rows: dbRow[]) => {
     res.send(rows)
   })
 })
 
 /* GET: current status of Ocean components on a given network. */
-router.get('/:network', async function (req: Request, res: Response) {
+router.get('/network/:network', async function (req: Request, res: Response) {
   await networkStatus(req.params.network, (row: dbRow) => {
     res.send(row)
   })
 })
 
 /* GET: trigger the monitoring of all Ocean components. */
-router.get('/forceUpdate', function (req: Request, res: Response) {
-  monitor(res)
+router.get('/forceUpdate', async function (req: Request, res: Response) {
+  const response = await monitor()
+  res.send(response)
 })
 
 export default router

@@ -14,7 +14,7 @@ import grantsStatus from './services/daoGrants'
 import { Status, Network } from '../@types/index'
 import notification from './notification'
 
-export default async function monitor(res: Response) {
+export default async function monitor(): Promise<string> {
   const networks: Network[] = JSON.parse(process.env.NETWORKS)
   const market = await marketStatus()
   const port = await portStatus()
@@ -52,9 +52,9 @@ export default async function monitor(res: Response) {
       notification(status)
     }
 
-    res.send({ response: 'Database has been updated' })
+    return 'Database has been updated'
   } catch (error) {
     console.log('error: ', error)
-    res.send(error)
+    return error
   }
 }

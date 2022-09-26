@@ -26,7 +26,7 @@ cron.schedule(`*/${process.env.INTERVAL} * * * *`, () => {
       Running task every ${process.env.INTERVAL} minutes. 
       Current time: ${Date.now()}`)
 
-    monitor(network.name)
+    monitor()
   })
 })
 
