@@ -173,7 +173,7 @@ export function insert(status: Status) {
         status.provider.status,
         status.provider.response,
         status.provider.version,
-        status.aquarius.latestRelease,
+        status.provider.latestRelease,
         status.subgraph.status,
         status.subgraph.response,
         status.subgraph.version,
