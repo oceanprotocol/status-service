@@ -14,7 +14,7 @@ router.get('/:network', async function (req: Request, res: Response) {
 })
 
 /* GET: monitor current status of Ocean components. */
-router.get('/', function (req: Request, res: Response) {
+router.get('/forceUpdate', function (req: Request, res: Response) {
   monitor(res)
 })
 

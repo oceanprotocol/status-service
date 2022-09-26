@@ -192,7 +192,7 @@ describe('Price Request Tests', function () {
 
   it('Monitors the current status of OCEAN', async () => {
     const response = await request(app)
-      .get('/')
+      .get('/forceUpdate')
       .expect('Content-Type', /json/)
       .expect(200)
 
