@@ -62,7 +62,7 @@ export interface Network {
   chainId: string
   test?: boolean
   faucetWallet?: string
-  infuraId?: string
+  rpcUrl?: string
   oceanAddress?: string
 }
 

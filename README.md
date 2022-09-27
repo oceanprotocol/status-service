@@ -2,8 +2,6 @@
 
 ## Setup
 
-### Running locally
-
 To run the status service, you first need to duplicate the `.env.example` file and rename it as `.env`. You need to replace the following environmental variables:
 
 - For each network you need to provider an RPC URL (`rpcUrl`).
@@ -16,7 +14,33 @@ You may also wish to change the following settings via the environmental variabl
 - `BLOCK_TOLERANCE` this is the number of blocks behind a service can be before it generates a `WARNING` response. We check the indexed block number for both aquarius and the subgraph.
 - `MIN_FAUCET_ETH` and `MIN_FAUCET_OCEAN` if the faucet ballance falls below these values it will generate a `WARNING` response.
 
+## Running locally
+
+To run the service locally, use the following command:
+
+```Bash
+npm run dev
+```
+
 ## API Endpoints
+
+### Get the current status of Ocean components on all networks.
+
+```
+GET: http://localhost:3000/
+```
+
+### Get the current status of Ocean components on a given network.
+
+```
+GET: http://localhost:3000/network/mainnet
+```
+
+### Trigger the monitoring of all Ocean components.
+
+```
+GET: http://localhost:3000/forceUpdate
+```
 
 ## Testing
 
