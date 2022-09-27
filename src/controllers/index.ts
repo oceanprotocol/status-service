@@ -25,7 +25,7 @@ export default async function monitor(): Promise<string> {
       const network: Network = networks[i]
       const status: Status = { network: network.name }
 
-      if (network.faucetWallet && network.infuraId)
+      if (network.faucetWallet && network.rpcUrl)
         status.faucet = await faucetStatus(network)
       else
         status.faucet = {

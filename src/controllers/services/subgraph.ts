@@ -121,7 +121,7 @@ export default async function subgraphStatus(
   subgraphStatus.block = data._meta.block.number
 
   let blockNum: number
-  if (network.name && network.infuraId) {
+  if (network.name && network.rpcUrl) {
     blockNum = await getBlock(network)
   }
 

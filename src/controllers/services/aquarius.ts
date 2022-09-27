@@ -68,7 +68,7 @@ export default async function aquariusStatus(
 
   status.block = (await chainStatus.json()).last_block
 
-  if (network.name && network.infuraId) {
+  if (network.name && network.rpcUrl) {
     status.latestBlock = await getBlock(network)
   }
 
