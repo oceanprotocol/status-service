@@ -16,6 +16,7 @@ export async function connection() {
           db.run(
             `CREATE TABLE IF NOT EXISTS statusHistory(
               network text,
+              currentBlock integer,
               aquariusStatus text,
               aquariusResponse integer,
               aquariusChain number,
@@ -66,6 +67,7 @@ export async function networkStatus(
     db.all(
       `SELECT 
         network,
+        currentBlock,
         aquariusStatus,
         aquariusResponse,
         aquariusChain,
@@ -129,6 +131,7 @@ export function insert(status: Status) {
     db.run(
       `INSERT INTO statusHistory(
         network,
+        currentBlock,
         aquariusStatus,
         aquariusResponse,
         aquariusChain,
@@ -160,9 +163,10 @@ export function insert(status: Status) {
         faucetOceanBalance,
         faucetOceanBalanceSufficient,
         lastUpdatedOn
-        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         status.network,
+        status.currentBlock,
         status.aquarius.status,
         status.aquarius.response,
         status.aquarius.chain,

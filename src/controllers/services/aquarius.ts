@@ -1,7 +1,6 @@
 import fetch from 'cross-fetch'
 import { AquariusStatus, Network } from '../../@types'
 import latestRelease from '../utils/github'
-import { getBlock } from '../utils/ethers'
 
 async function aquariusQuery(chainId: string): Promise<boolean> {
   const responcse = await fetch(
@@ -48,7 +47,8 @@ async function aquariusQuery(chainId: string): Promise<boolean> {
 }
 
 export default async function aquariusStatus(
-  network: Network
+  network: Network,
+  currentBlock: number
 ): Promise<AquariusStatus> {
   const status: AquariusStatus = {}
 
@@ -68,10 +68,6 @@ export default async function aquariusStatus(
 
   status.block = (await chainStatus.json()).last_block
 
-  if (network.name && network.rpcUrl) {
-    status.latestBlock = await getBlock(network)
-  }
-
   status.validQuery = await aquariusQuery(network.chainId)
 
   if (status.response !== 200 || !status.chain || !status.validQuery)
@@ -79,7 +75,7 @@ export default async function aquariusStatus(
   else if (
     status.version !== status.latestRelease ||
     !status.chain ||
-    status.latestBlock >= status.block + Number(process.env.BLOCK_TOLERANCE)
+    currentBlock >= status.block + Number(process.env.BLOCK_TOLERANCE)
   )
     status.status = 'WARNING'
   else status.status = 'UP'
