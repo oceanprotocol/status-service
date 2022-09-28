@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import sqlite3 from 'sqlite3'
-import { Status, Network, dbRow } from '../@types/index'
+import { Status, Network, dbRow, State } from '../@types/index'
 
 let db
 
@@ -60,6 +60,7 @@ export async function connection() {
 }
 
 function format(row: dbRow): Status {
+  console.log('Format row: ', row)
   const response: Status = {
     network: row.network,
     lastUpdatedOn: row.lastUpdatedOn,
@@ -74,7 +75,8 @@ function format(row: dbRow): Status {
       version: row.aquariusVersion,
       latestRelease: row.aquariusLatestRelease,
       block: row.aquariusBlock,
-      validQuery: Boolean(row.aquariusValidQuery)
+      validQuery: Boolean(row.aquariusValidQuery),
+      chain: Boolean(row.aquariusChain)
     },
     provider: {
       status: row.providerStatus,
@@ -97,14 +99,16 @@ function format(row: dbRow): Status {
       environments: row.operatorEnvironments,
       limitReached: Boolean(row.operatorLimitReached)
     },
-    faucet: {
-      status: row.faucetStatus,
-      response: row.faucetResponse,
-      ethBalance: row.faucetEthBalance,
-      ethBalanceSufficient: Boolean(row.faucetEthBalanceSufficient),
-      oceanBalance: row.faucetOceanBalance,
-      oceanBalanceSufficient: Boolean(row.faucetOceanBalanceSufficient)
-    }
+    faucet: row.faucetStatus
+      ? {
+          status: row.faucetStatus,
+          response: row.faucetResponse,
+          ethBalance: row.faucetEthBalance,
+          ethBalanceSufficient: Boolean(row.faucetEthBalanceSufficient),
+          oceanBalance: row.faucetOceanBalance,
+          oceanBalanceSufficient: Boolean(row.faucetOceanBalanceSufficient)
+        }
+      : {}
   }
   return response
 }
@@ -154,7 +158,7 @@ export async function networkStatus(
         if (err) {
           return console.log(err.message)
         }
-        const response = format(row)
+        const response = format(row[0])
         callback(response)
       }
     )

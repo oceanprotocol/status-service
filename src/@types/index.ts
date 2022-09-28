@@ -25,8 +25,6 @@ export interface ProviderStatus {
   response?: number
   version?: string
   latestRelease?: string
-  block?: number
-  latestBlock?: number
 }
 
 export interface AquariusStatus {
