@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { Network, SubgraphStatus } from '../../@types'
+import { Network, State, SubgraphStatus } from '../../@types'
 import latestRelease from '../utils/github'
 
 async function subgraphFetch(network: string, query: string) {
@@ -130,14 +130,14 @@ export default async function subgraphStatus(
     data.tokens.length < 1 ||
     data.nfts.length < 1
   )
-    subgraphStatus.status = 'DOWN'
+    subgraphStatus.status = State.Down
   else if (
     currentBlock >=
       subgraphStatus.block + Number(process.env.BLOCK_TOLERANCE) ||
     subgraphStatus.version !== subgraphStatus.latestRelease
   )
-    subgraphStatus.status = 'WARNING'
-  else subgraphStatus.status = 'UP'
+    subgraphStatus.status = State.Warning
+  else subgraphStatus.status = State.Up
 
   return subgraphStatus
 }

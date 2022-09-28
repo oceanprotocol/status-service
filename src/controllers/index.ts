@@ -1,4 +1,3 @@
-import { Response } from 'express'
 import 'dotenv/config'
 
 import { insert } from './db'
@@ -7,7 +6,7 @@ import marketStatus from './services/market'
 import portStatus from './services/port'
 import providerStatus from './services/provider'
 import subgraphStatus from './services/subgraph'
-import operatorStatus from './services/operatorService'
+import operatorStatus from './services/operator'
 import faucetStatus from './services/faucet'
 import dfStatus from './services/dataFarming'
 import grantsStatus from './services/daoGrants'
@@ -28,7 +27,7 @@ export default async function monitor(): Promise<string> {
       const provider = await providerStatus(network.name)
       const subgraph = await subgraphStatus(network, currentBlock)
       const aquarius = await aquariusStatus(network, currentBlock)
-      const operatorService = await operatorStatus(network.chainId)
+      const operator = await operatorStatus(network.chainId)
 
       const status: Status = {
         network: network.name,
@@ -41,7 +40,8 @@ export default async function monitor(): Promise<string> {
         provider,
         subgraph,
         aquarius,
-        operatorService
+        operator,
+        lastUpdatedOn: Date.now()
       }
 
       if (network.faucetWallet && network.rpcUrl)
@@ -55,7 +55,8 @@ export default async function monitor(): Promise<string> {
 
     return 'Database has been updated'
   } catch (error) {
-    console.log('error: ', error)
-    return error
+    const response = String(error)
+    console.log('# error: ', response)
+    return `ERROR: ${response}`
   }
 }

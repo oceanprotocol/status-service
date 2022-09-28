@@ -17,7 +17,7 @@ export default function notification(status: Status) {
     },
     {
       name: 'Operator Service',
-      status: status.operatorService.status
+      status: status.operator.status
     },
     {
       name: 'Market',

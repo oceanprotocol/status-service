@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import fetch from 'cross-fetch'
 import latestRelease from '../utils/github'
-import { ProviderStatus } from '../../@types'
+import { ProviderStatus, State } from '../../@types'
 
 const fileInfoBody = `{
   "url": "https://s3.amazonaws.com/testfiles.oceanprotocol.com/info.0.json",
@@ -106,10 +106,10 @@ export default async function providerStatus(
   const validDt = ethers.utils.isAddress(initializeResponse.datatoken)
 
   if (response.status !== 200 && !fileInfo.valid && !validDt)
-    providerStatus.status = 'DOWN'
+    providerStatus.status = State.Down
   else if (providerStatus.version !== providerStatus.latestRelease)
-    providerStatus.status = 'WARNING'
-  else providerStatus.status = 'UP'
+    providerStatus.status = State.Warning
+  else providerStatus.status = State.Up
 
   return providerStatus
 }

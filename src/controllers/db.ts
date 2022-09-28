@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import sqlite3 from 'sqlite3'
-import { Status, dbRow, Network } from '../@types/index'
+import { Status, Network, dbRow } from '../@types/index'
 
 let db
 
@@ -41,7 +41,7 @@ export async function connection() {
               operatorLimitReached number,
               market text, 
               port text,
-              faucet text,
+              faucetStatus text,
               faucetResponse integer,
               faucetEthBalance text,
               faucetEthBalanceSufficient text,
@@ -59,9 +59,59 @@ export async function connection() {
   }
 }
 
+function format(row: dbRow): Status {
+  const response: Status = {
+    network: row.network,
+    lastUpdatedOn: row.lastUpdatedOn,
+    currentBlock: row.currentBlock,
+    market: row.market,
+    port: row.port,
+    dataFarming: row.dataFarming,
+    daoGrants: row.daoGrants,
+    aquarius: {
+      status: row.aquariusStatus,
+      response: row.aquariusResponse,
+      version: row.aquariusVersion,
+      latestRelease: row.aquariusLatestRelease,
+      block: row.aquariusBlock,
+      validQuery: Boolean(row.aquariusValidQuery)
+    },
+    provider: {
+      status: row.providerStatus,
+      response: row.providerResponse,
+      version: row.providerVersion,
+      latestRelease: row.providerLatestRelease
+    },
+    subgraph: {
+      status: row.subgraphStatus,
+      response: row.subgraphResponse,
+      version: row.subgraphVersion,
+      latestRelease: row.subgraphLatestRelease,
+      block: row.subgraphBlock
+    },
+    operator: {
+      status: row.operatorStatus,
+      response: row.operatorResponse,
+      version: row.operatorVersion,
+      latestRelease: row.operatorLatestRelease,
+      environments: row.operatorEnvironments,
+      limitReached: Boolean(row.operatorLimitReached)
+    },
+    faucet: {
+      status: row.faucetStatus,
+      response: row.faucetResponse,
+      ethBalance: row.faucetEthBalance,
+      ethBalanceSufficient: Boolean(row.faucetEthBalanceSufficient),
+      oceanBalance: row.faucetOceanBalance,
+      oceanBalanceSufficient: Boolean(row.faucetOceanBalanceSufficient)
+    }
+  }
+  return response
+}
+
 export async function networkStatus(
   network: string,
-  callback: (row: dbRow) => void
+  callback: (data: Status) => void
 ) {
   try {
     db.all(
@@ -92,7 +142,7 @@ export async function networkStatus(
         operatorLimitReached,
         market, 
         port,
-        faucet,
+        faucetStatus,
         faucetResponse,
         faucetEthBalance,
         faucetEthBalanceSufficient,
@@ -100,11 +150,12 @@ export async function networkStatus(
         faucetOceanBalanceSufficient,
         lastUpdatedOn FROM statusHistory WHERE network = "${network}" ORDER BY lastUpdatedOn DESC`,
       [],
-      function (err, row) {
+      function (err, row: dbRow) {
         if (err) {
           return console.log(err.message)
         }
-        callback(row[0])
+        const response = format(row)
+        callback(response)
       }
     )
   } catch (err) {
@@ -112,13 +163,13 @@ export async function networkStatus(
   }
 }
 
-export async function getStatus(callback: (row: dbRow[]) => void) {
+export async function getStatus(callback: (row: Status[]) => void) {
   const networks: Network[] = JSON.parse(process.env.NETWORKS)
-  const status: dbRow[] = []
+  const status: Status[] = []
   for (let i = 0; i < networks.length; i++) {
     const network: string = networks[i].name
-    await networkStatus(network, (row: dbRow) => {
-      status.push(row)
+    await networkStatus(network, (data: Status) => {
+      status.push(data)
       if (i === networks.length - 1) {
         callback(status)
       }
@@ -156,7 +207,7 @@ export function insert(status: Status) {
         operatorLimitReached,
         market, 
         port,
-        faucet,
+        faucetStatus,
         faucetResponse,
         faucetEthBalance,
         faucetEthBalanceSufficient,
@@ -183,12 +234,12 @@ export function insert(status: Status) {
         status.subgraph.version,
         status.subgraph.latestRelease,
         status.subgraph.block,
-        status.operatorService.status,
-        status.operatorService.response,
-        status.operatorService.version,
-        status.operatorService.latestRelease,
-        status.operatorService.environments,
-        status.operatorService.limitReached,
+        status.operator.status,
+        status.operator.response,
+        status.operator.version,
+        status.operator.latestRelease,
+        status.operator.environments,
+        status.operator.limitReached,
         status.market,
         status.port,
         status.faucet.status,
@@ -197,7 +248,7 @@ export function insert(status: Status) {
         status.faucet.oceanBalance,
         status.faucet.oceanBalanceSufficient,
         status.faucet.status,
-        Date.now()
+        status.lastUpdatedOn
       ],
       function (err) {
         if (err) {

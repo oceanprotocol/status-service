@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { AquariusStatus, Network } from '../../@types'
+import { AquariusStatus, Network, State } from '../../@types/index'
 import latestRelease from '../utils/github'
 
 async function aquariusQuery(chainId: string): Promise<boolean> {
@@ -71,13 +71,13 @@ export default async function aquariusStatus(
   status.validQuery = await aquariusQuery(network.chainId)
 
   if (status.response !== 200 || !status.chain || !status.validQuery)
-    status.status = 'DOWN'
+    status.status = State.Down
   else if (
     status.version !== status.latestRelease ||
     !status.chain ||
     currentBlock >= status.block + Number(process.env.BLOCK_TOLERANCE)
   )
-    status.status = 'WARNING'
-  else status.status = 'UP'
+    status.status = State.Warning
+  else status.status = State.Up
   return status
 }

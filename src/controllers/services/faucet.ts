@@ -1,6 +1,6 @@
 import { ethers, BigNumber } from 'ethers'
 import fetch from 'cross-fetch'
-import { FaucetStatus, Network } from '../../@types'
+import { FaucetStatus, Network, State } from '../../@types'
 import getWeb3Provider from '../utils/ethers'
 import abi from '../../abi/token.json'
 
@@ -39,8 +39,8 @@ export default async function faucetStatus(
     status.ethBalanceSufficient &&
     status.oceanBalanceSufficient
   )
-    status.status = 'UP'
-  else status.status = 'DOWN'
+    status.status = State.Up
+  else status.status = State.Down
 
   return status
 }

@@ -1,20 +1,27 @@
 import { BigNumber } from 'ethers'
 
+export enum State {
+  Up = 'UP',
+  Down = 'DOWN',
+  Warning = 'WARNING'
+}
+
 export interface Status {
   network: string
   currentBlock: number
-  market: 'UP' | 'DOWN'
-  port: 'UP' | 'DOWN'
+  market: State
+  port: State
   faucet: FaucetStatus | Record<string, never>
-  dataFarming: 'UP' | 'DOWN'
-  daoGrants: 'UP' | 'DOWN'
   aquarius: AquariusStatus
   provider: ProviderStatus
   subgraph: SubgraphStatus
-  operatorService?: OperatorStatus
+  operator: OperatorStatus
+  dataFarming: State
+  daoGrants: State
+  lastUpdatedOn: number
 }
 export interface ProviderStatus {
-  status?: 'UP' | 'DOWN' | 'WARNING'
+  status?: State
   response?: number
   version?: string
   latestRelease?: string
@@ -23,7 +30,7 @@ export interface ProviderStatus {
 }
 
 export interface AquariusStatus {
-  status?: 'UP' | 'DOWN' | 'WARNING'
+  status?: State
   response?: number
   chain?: boolean
   version?: string
@@ -32,7 +39,7 @@ export interface AquariusStatus {
   validQuery?: boolean
 }
 export interface SubgraphStatus {
-  status?: 'UP' | 'DOWN' | 'WARNING'
+  status?: State
   response?: number
   version?: string
   latestRelease?: string
@@ -40,7 +47,7 @@ export interface SubgraphStatus {
 }
 
 export interface OperatorStatus {
-  status?: 'UP' | 'DOWN' | 'WARNING'
+  status?: State
   response?: number
   version?: string
   latestRelease?: string
@@ -48,7 +55,7 @@ export interface OperatorStatus {
   limitReached?: boolean
 }
 export interface FaucetStatus {
-  status?: 'UP' | 'DOWN' | 'WARNING'
+  status?: State
   response?: number
   ethBalance?: BigNumber
   ethBalanceSufficient?: boolean
@@ -67,35 +74,38 @@ export interface Network {
 
 export interface dbRow {
   network: string
-  aquariusStatus: string
+  currentBlock: number
+  aquariusStatus: State
   aquariusResponse: number
   aquariusChain: number
   aquariusVersion: string
   aquariusLatestRelease: string
   aquariusBlock: number
   aquariusValidQuery: number
-  providerStatus: string
+  providerStatus: State
   providerResponse: number
   providerVersion: string
   providerLatestRelease: string
-  subgraphStatus: string
+  subgraphStatus: State
   subgraphResponse: number
   subgraphVersion: string
   subgraphLatestRelease: string
   subgraphBlock: number
-  operatorStatus: string
+  operatorStatus: State
   operatorResponse: number
   operatorVersion: string
   operatorLatestRelease: string
   operatorEnvironments: number
   operatorLimitReached: number
-  market: string
-  port: string
-  faucet: string
-  faucetResponse: string
-  faucetEthBalance: string
+  market: State
+  port: State
+  faucetStatus: State
+  faucetResponse: number
+  faucetEthBalance: BigNumber
   faucetEthBalanceSufficient: number | string
-  faucetOceanBalance: string
+  faucetOceanBalance: BigNumber
   faucetOceanBalanceSufficient: number | string
+  dataFarming: State
+  daoGrants: State
   lastUpdatedOn: number
 }
