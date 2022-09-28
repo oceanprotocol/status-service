@@ -2,15 +2,16 @@ import { BigNumber } from 'ethers'
 
 export interface Status {
   network: string
-  aquarius?: AquariusStatus
-  provider?: ProviderStatus
-  subgraph?: SubgraphStatus
-  market?: 'UP' | 'DOWN'
-  port?: 'UP' | 'DOWN'
-  faucet?: FaucetStatus
+  currentBlock: number
+  market: 'UP' | 'DOWN'
+  port: 'UP' | 'DOWN'
+  faucet: FaucetStatus | Record<string, never>
+  dataFarming: 'UP' | 'DOWN'
+  daoGrants: 'UP' | 'DOWN'
+  aquarius: AquariusStatus
+  provider: ProviderStatus
+  subgraph: SubgraphStatus
   operatorService?: OperatorStatus
-  dataFarming?: 'UP' | 'DOWN'
-  daoGrants?: 'UP' | 'DOWN'
 }
 export interface ProviderStatus {
   status?: 'UP' | 'DOWN' | 'WARNING'
@@ -28,7 +29,6 @@ export interface AquariusStatus {
   version?: string
   latestRelease?: string
   block?: number
-  latestBlock?: number
   validQuery?: boolean
 }
 export interface SubgraphStatus {
@@ -37,7 +37,6 @@ export interface SubgraphStatus {
   version?: string
   latestRelease?: string
   block?: number
-  latestBlock?: number
 }
 
 export interface OperatorStatus {
@@ -49,12 +48,12 @@ export interface OperatorStatus {
   limitReached?: boolean
 }
 export interface FaucetStatus {
-  status?: 'UP' | 'DOWN' | 'WARNING' | 'N/A'
-  response?: number | 'N/A'
-  ethBalance?: BigNumber | 'N/A'
-  ethBalanceSufficient?: boolean | 'N/A'
-  oceanBalance?: BigNumber | 'N/A'
-  oceanBalanceSufficient?: boolean | 'N/A'
+  status?: 'UP' | 'DOWN' | 'WARNING'
+  response?: number
+  ethBalance?: BigNumber
+  ethBalanceSufficient?: boolean
+  oceanBalance?: BigNumber
+  oceanBalanceSufficient?: boolean
 }
 
 export interface Network {
