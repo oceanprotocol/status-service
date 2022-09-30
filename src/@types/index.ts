@@ -32,6 +32,7 @@ export interface AquariusStatus {
   response?: number
   validChainList?: boolean
   version?: string
+  moduleVersion?: string
   latestRelease?: string
   block?: number
   validQuery?: boolean
@@ -77,6 +78,7 @@ export interface dbRow {
   aquariusResponse: number
   aquariusChain: number
   aquariusVersion: string
+  aquariusModuleVersion: string
   aquariusLatestRelease: string
   aquariusBlock: number
   aquariusValidQuery: number

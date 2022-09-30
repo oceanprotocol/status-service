@@ -68,13 +68,16 @@ export default async function aquariusStatus(
   const chainStatusData = await chainStatus.json()
 
   status.block = chainStatusData.last_block
+  chainStatusData.version
+    ? (status.moduleVersion = chainStatusData.version)
+    : (status.moduleVersion = 'N/A')
 
   status.validQuery = await aquariusQuery(network.chainId)
 
-  if (status.response !== 200 || !status.validChainList || !status.validQuery)
-    status.status = State.Down
+  if (status.response !== 200 || !status.validQuery) status.status = State.Down
   else if (
     status.version !== status.latestRelease ||
+    status.moduleVersion !== status.latestRelease ||
     !status.validChainList ||
     currentBlock >= status.block + Number(process.env.BLOCK_TOLERANCE)
   )

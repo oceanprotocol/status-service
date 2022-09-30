@@ -21,6 +21,7 @@ export async function connection() {
               aquariusResponse integer,
               aquariusChain number,
               aquariusVersion text,
+              aquariusModuleVersion text,
               aquariusLatestRelease text,
               aquariusBlock integer,
               aquariusValidQuery number,
@@ -60,7 +61,6 @@ export async function connection() {
 }
 
 function format(row: dbRow): Status {
-  console.log('Format row: ', row)
   const response: Status = {
     network: row.network,
     lastUpdatedOn: row.lastUpdatedOn,
@@ -73,6 +73,7 @@ function format(row: dbRow): Status {
       status: row.aquariusStatus,
       response: row.aquariusResponse,
       version: row.aquariusVersion,
+      moduleVersion: row.aquariusModuleVersion,
       latestRelease: row.aquariusLatestRelease,
       block: row.aquariusBlock,
       validQuery: Boolean(row.aquariusValidQuery),
@@ -126,6 +127,7 @@ export async function networkStatus(
         aquariusResponse,
         aquariusChain,
         aquariusVersion,
+        aquariusModuleVersion,
         aquariusLatestRelease,
         aquariusBlock,
         aquariusValidQuery,
@@ -191,6 +193,7 @@ export function insert(status: Status) {
         aquariusResponse,
         aquariusChain,
         aquariusVersion,
+        aquariusModuleVersion,
         aquariusLatestRelease,
         aquariusBlock,
         aquariusValidQuery,
@@ -218,7 +221,7 @@ export function insert(status: Status) {
         faucetOceanBalance,
         faucetOceanBalanceSufficient,
         lastUpdatedOn
-        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         status.network,
         status.currentBlock,
@@ -226,6 +229,7 @@ export function insert(status: Status) {
         status.aquarius.response,
         status.aquarius.validChainList,
         status.aquarius.version,
+        status.aquarius.moduleVersion,
         status.aquarius.latestRelease,
         status.aquarius.block,
         status.aquarius.validQuery,

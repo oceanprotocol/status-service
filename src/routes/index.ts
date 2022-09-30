@@ -8,7 +8,6 @@ const router = express.Router()
 
 /* GET: current status of Ocean components on all networks. */
 router.get('/', async function (req: Request, res: Response) {
-  console.log('Start 123')
   await getStatus((rows: Status[]) => {
     res.send(rows)
   })

@@ -14,10 +14,8 @@ export default function getWeb3Provider(
 }
 
 export async function getBlock(network: Network): Promise<number> {
-  console.log('GET web3Provider for network:', network.name)
   if (!network.rpcUrl) return 0
   const web3Provider = getWeb3Provider(network)
   const blockNum = await web3Provider.getBlockNumber()
-  console.log('blockNum', blockNum)
   return blockNum
 }
