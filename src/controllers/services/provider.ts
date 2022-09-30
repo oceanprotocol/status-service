@@ -63,6 +63,12 @@ function initializeInfo(network: string): { did: string; serviceId: string } {
         serviceId:
           '2bb9c8cadd3ebf850a0d80b8b086de2a6c50b5e43971d7e25ad387d1350500e5'
       }
+    case 'goerli':
+      return {
+        did: '3b91a15fef9c47ef76274be9cfc8af7f24055577cf2ecb8e28bc7ee465802781',
+        serviceId:
+          '2bb9c8cadd3ebf850a0d80b8b086de2a6c50b5e43971d7e25ad387d1350500e5'
+      }
 
     default:
       break

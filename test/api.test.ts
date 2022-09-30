@@ -44,7 +44,10 @@ describe('Price Request Tests', function () {
       data.aquarius.response === 200,
       'Invalid aquariusResponse for mainnet'
     )
-    assert(data.aquarius.chain === true, 'Invalid aquariusChain for mainnet')
+    assert(
+      data.aquarius.validChainList === true,
+      'Invalid aquariusChain for mainnet'
+    )
     assert(data.aquarius.version, 'Invalid aquariusVersion for mainnet')
     assert(
       data.aquarius.latestRelease,
@@ -137,7 +140,10 @@ describe('Price Request Tests', function () {
       data.aquarius.response === 200,
       'Invalid aquariusResponse for mainnet'
     )
-    assert(data.aquarius.chain === true, 'Invalid aquariusChain for Polygon')
+    assert(
+      data.aquarius.validChainList === true,
+      'Invalid aquariusChain for Polygon'
+    )
     assert(data.aquarius.version, 'Invalid aquariusVersion for Polygon')
     assert(
       data.aquarius.latestRelease,

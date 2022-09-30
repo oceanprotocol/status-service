@@ -224,7 +224,7 @@ export function insert(status: Status) {
         status.currentBlock,
         status.aquarius.status,
         status.aquarius.response,
-        status.aquarius.chain,
+        status.aquarius.validChainList,
         status.aquarius.version,
         status.aquarius.latestRelease,
         status.aquarius.block,

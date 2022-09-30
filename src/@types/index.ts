@@ -30,7 +30,7 @@ export interface ProviderStatus {
 export interface AquariusStatus {
   status?: State
   response?: number
-  chain?: boolean
+  validChainList?: boolean
   version?: string
   latestRelease?: string
   block?: number

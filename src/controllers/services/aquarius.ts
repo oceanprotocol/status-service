@@ -65,8 +65,10 @@ export default async function aquariusStatus(
   const chainStatus = await fetch(
     `https://v4.aquarius.oceanprotocol.com/api/aquarius/chains/status/${network.chainId}`
   )
+  const chainStatusData = await chainStatus.json()
+  console.log('chainStatusData', chainStatusData)
 
-  status.block = (await chainStatus.json()).last_block
+  status.block = chainStatusData.last_block
 
   status.validQuery = await aquariusQuery(network.chainId)
 
