@@ -60,23 +60,22 @@ export default async function aquariusStatus(
   const chainResponse = await fetch(
     'https://v4.aquarius.oceanprotocol.com/api/aquarius/chains/list'
   )
-  status.chain = (await chainResponse.json())[network.chainId]
+  status.validChainList = (await chainResponse.json())[network.chainId]
 
   const chainStatus = await fetch(
     `https://v4.aquarius.oceanprotocol.com/api/aquarius/chains/status/${network.chainId}`
   )
   const chainStatusData = await chainStatus.json()
-  console.log('chainStatusData', chainStatusData)
 
   status.block = chainStatusData.last_block
 
   status.validQuery = await aquariusQuery(network.chainId)
 
-  if (status.response !== 200 || !status.chain || !status.validQuery)
+  if (status.response !== 200 || !status.validChainList || !status.validQuery)
     status.status = State.Down
   else if (
     status.version !== status.latestRelease ||
-    !status.chain ||
+    !status.validChainList ||
     currentBlock >= status.block + Number(process.env.BLOCK_TOLERANCE)
   )
     status.status = State.Warning

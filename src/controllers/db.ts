@@ -76,7 +76,7 @@ function format(row: dbRow): Status {
       latestRelease: row.aquariusLatestRelease,
       block: row.aquariusBlock,
       validQuery: Boolean(row.aquariusValidQuery),
-      chain: Boolean(row.aquariusChain)
+      validChainList: Boolean(row.aquariusChain)
     },
     provider: {
       status: row.providerStatus,
