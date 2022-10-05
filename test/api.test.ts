@@ -1,12 +1,12 @@
 import request from 'supertest'
 import { assert } from 'chai'
 import app from '../src/app'
-import { dbRow, Network } from '../src/@types'
+import { Network, Status } from '../src/@types'
 import { getBlock } from '../src/controllers/utils/ethers'
 import mail from '../src/controllers/mail'
 
 describe('Price Request Tests', function () {
-  this.timeout(240000)
+  this.timeout(300000)
   const networks: Network[] = JSON.parse(process.env.NETWORKS)
   let recentBlock: number
 
@@ -14,191 +14,204 @@ describe('Price Request Tests', function () {
     await mail(['market', 'provider', 'port'], true)
   })
 
+  it('Monitors the current status of OCEAN', async () => {
+    const response = await request(app).get('/forceUpdate').expect(200)
+    console.log('response', response.body.response)
+    assert(
+      response.body.response === 'Database has been updated',
+      'Failed to monitor services and update DB'
+    )
+  })
+
   it('Gets the current status of Ocean services on Mainnet', async () => {
     const response = await request(app)
-      .get('/mainnet')
+      .get('/network/mainnet')
       .expect('Content-Type', /json/)
       .expect(200)
-    const row: dbRow = response.body
+    const data: Status = response.body
 
-    console.log('Mainnet row', row)
+    console.log('Mainnet row', data)
 
     recentBlock = (await getBlock(networks[0])) - 60
 
-    assert(row, 'Invalid body for mainnet')
-    assert(row.network === 'mainnet', 'Invalid network for mainnet')
+    assert(data, 'Invalid body for mainnet')
+    assert(data.network === 'mainnet', 'Invalid network for mainnet')
     assert(
-      row.aquariusStatus === 'UP' || 'WARNING',
+      data.aquarius.status === 'UP' || 'WARNING',
       'Invalid aquariusStatus for mainnet'
     )
-    assert(row.aquariusResponse === 200, 'Invalid aquariusResponse for mainnet')
-    assert(row.aquariusChain === 1, 'Invalid aquariusChain for mainnet')
-    assert(row.aquariusVersion, 'Invalid aquariusVersion for mainnet')
     assert(
-      row.aquariusLatestRelease,
+      data.aquarius.response === 200,
+      'Invalid aquariusResponse for mainnet'
+    )
+    assert(
+      data.aquarius.validChainList === true,
+      'Invalid aquariusChain for mainnet'
+    )
+    assert(data.aquarius.version, 'Invalid aquariusVersion for mainnet')
+    assert(
+      data.aquarius.latestRelease,
       'Invalid aquariusLatestRelease for mainnet'
     )
-    assert(row.aquariusBlock > recentBlock, 'Invalid aquariusBlock for mainnet')
     assert(
-      row.aquariusValidQuery === 1,
+      data.aquarius.block > recentBlock,
+      'Invalid aquariusBlock for mainnet'
+    )
+    assert(
+      data.aquarius.validQuery === true,
       'Invalid aquariusValidQuery for mainnet'
     )
-    assert(row.providerStatus === 'UP' || 'WARNING', 'Invalid body for mainnet')
-    assert(row.providerResponse === 200, 'Invalid providerResponse for mainnet')
-    assert(row.providerVersion, 'Invalid providerVersion for mainnet')
     assert(
-      row.providerLatestRelease,
+      data.provider.status === 'UP' || 'WARNING',
+      'Invalid body for mainnet'
+    )
+    assert(
+      data.provider.response === 200,
+      'Invalid providerResponse for mainnet'
+    )
+    assert(data.provider.version, 'Invalid providerVersion for mainnet')
+    assert(
+      data.provider.latestRelease,
       'Invalid providerLatestRelease for mainnet'
     )
     assert(
-      row.subgraphStatus === 'UP' || 'WARNING',
+      data.subgraph.status === 'UP' || 'WARNING',
       'Invalid subgraphStatus for mainnet'
     )
-    assert(row.subgraphResponse === 200, 'Invalid subgraphResponse for mainnet')
-    assert(row.subgraphVersion, 'Invalid subgraphVersion for mainnet')
     assert(
-      row.subgraphLatestRelease,
+      data.subgraph.response === 200,
+      'Invalid subgraphResponse for mainnet'
+    )
+    assert(data.subgraph.version, 'Invalid subgraphVersion for mainnet')
+    assert(
+      data.subgraph.latestRelease,
       'Invalid subgraphLatestRelease for mainnet'
     )
-    assert(row.subgraphBlock > recentBlock, 'Invalid subgraphBlock for mainnet')
-    assert(row.operatorStatus === 'UP', 'Invalid operatorStatus for mainnet')
-    assert(row.operatorResponse === 200, 'Invalid operatorResponse for mainnet')
-    assert(row.operatorVersion, 'Invalid operatorVersion for mainnet')
     assert(
-      row.operatorLatestRelease,
+      data.subgraph.block > recentBlock,
+      'Invalid subgraphBlock for mainnet'
+    )
+    assert(data.operator.status === 'UP', 'Invalid operatorStatus for mainnet')
+    assert(
+      data.operator.response === 200,
+      'Invalid operatorResponse for mainnet'
+    )
+    assert(data.operator.version, 'Invalid operatorVersion for mainnet')
+    assert(
+      data.operator.latestRelease,
       'Invalid operatorLatestRelease for mainnet'
     )
     assert(
-      row.operatorEnvironments === Number(process.env.C2D_ENVIRONMENTS),
+      data.operator.environments === Number(process.env.C2D_ENVIRONMENTS),
       'Invalid operatorEnvironments for mainnet'
     )
     assert(
-      row.operatorLimitReached === 0,
+      data.operator.limitReached === false,
       'Invalid operatorLimitReached for mainnet'
     )
-    assert(row.market === 'UP', 'Invalid market for mainnet')
-    assert(row.port === 'UP', 'Invalid port for mainnet')
-    assert(row.faucet === 'N/A', 'Invalid faucet for mainnet')
-    assert(row.faucetResponse === 'N/A', 'Invalid faucetResponse for mainnet')
+    assert(data.market === 'UP', 'Invalid market for mainnet')
+    assert(data.port === 'UP', 'Invalid port for mainnet')
+    assert(data.faucet, 'Invalid faucet for mainnet')
+    assert(Object.keys(data.faucet).length === 0, 'Invalid faucet for mainnet')
     assert(
-      row.faucetEthBalance === 'N/A',
-      'Invalid faucetEthBalance for mainnet'
-    )
-    assert(
-      row.faucetEthBalanceSufficient === 'N/A',
-      'Invalid faucetEthBalanceSufficient for mainnet'
-    )
-    assert(
-      row.faucetOceanBalance === 'N/A',
-      'Invalid faucetOceanBalance for mainnet'
-    )
-    assert(
-      row.faucetOceanBalanceSufficient === 'N/A',
-      'Invalid faucetOceanBalanceSufficient for mainnet'
-    )
-    assert(
-      row.lastUpdatedOn > Date.now() - 50000000,
+      data.lastUpdatedOn > Date.now() - 50000000,
       'Invalid lastUpdatedOn for mainnet'
     )
   })
 
   it('Gets the current status of Ocean services on Polygon', async () => {
     const response = await request(app)
-      .get('/polygon')
+      .get('/network/polygon')
       .expect('Content-Type', /json/)
       .expect(200)
 
-    const row: dbRow = response.body
+    const data: Status = response.body
     recentBlock = 10000 /// (await getBlock(networks[1])) - 60
 
-    console.log('Mainnet row', row)
+    console.log('Mainnet data', data)
 
-    assert(row, 'Invalid body for Polygon')
-    assert(row.network === 'polygon', 'Invalid network for Polygon')
+    assert(data, 'Invalid body for Polygon')
+    assert(data.network === 'polygon', 'Invalid network for Polygon')
     assert(
-      row.aquariusStatus === 'UP' || 'WARNING',
+      data.aquarius.status === 'UP' || 'WARNING',
       'Invalid aquariusStatus for Polygon'
     )
-    assert(row.aquariusResponse === 200, 'Invalid aquariusResponse for mainnet')
-    assert(row.aquariusChain === 1, 'Invalid aquariusChain for Polygon')
-    assert(row.aquariusVersion, 'Invalid aquariusVersion for Polygon')
     assert(
-      row.aquariusLatestRelease,
+      data.aquarius.response === 200,
+      'Invalid aquariusResponse for mainnet'
+    )
+    assert(
+      data.aquarius.validChainList === true,
+      'Invalid aquariusChain for Polygon'
+    )
+    assert(data.aquarius.version, 'Invalid aquariusVersion for Polygon')
+    assert(
+      data.aquarius.latestRelease,
       'Invalid aquariusLatestRelease for Polygon'
     )
-    assert(row.aquariusBlock > recentBlock, 'Invalid aquariusBlock for Polygon')
     assert(
-      row.aquariusValidQuery === 1,
+      data.aquarius.block > recentBlock,
+      'Invalid aquariusBlock for Polygon'
+    )
+    assert(
+      data.aquarius.validQuery === true,
       'Invalid aquariusValidQuery for Polygon'
     )
-    assert(row.providerStatus === 'UP' || 'WARNING', 'Invalid body for Polygon')
-    assert(row.providerResponse === 200, 'Invalid providerResponse for Polygon')
-    assert(row.providerVersion, 'Invalid providerVersion for Polygon')
     assert(
-      row.providerLatestRelease,
+      data.provider.status === 'UP' || 'WARNING',
+      'Invalid body for Polygon'
+    )
+    assert(
+      data.provider.response === 200,
+      'Invalid providerResponse for Polygon'
+    )
+    assert(data.provider.version, 'Invalid providerVersion for Polygon')
+    assert(
+      data.provider.latestRelease,
       'Invalid providerLatestRelease for Polygon'
     )
     assert(
-      row.subgraphStatus === 'UP' || 'WARNING',
+      data.subgraph.status === 'UP' || 'WARNING',
       'Invalid subgraphStatus for Polygon'
     )
-    assert(row.subgraphResponse === 200, 'Invalid subgraphResponse for Polygon')
-    assert(row.subgraphVersion, 'Invalid subgraphVersion for Polygon')
     assert(
-      row.subgraphLatestRelease,
+      data.subgraph.response === 200,
+      'Invalid subgraphResponse for Polygon'
+    )
+    assert(data.subgraph.version, 'Invalid subgraphVersion for Polygon')
+    assert(
+      data.subgraph.latestRelease,
       'Invalid subgraphLatestRelease for Polygon'
     )
-    assert(row.subgraphBlock > recentBlock, 'Invalid subgraphBlock for Polygon')
-    assert(row.operatorStatus === 'UP', 'Invalid operatorStatus for Polygon')
-    assert(row.operatorResponse === 200, 'Invalid operatorResponse for Polygon')
-    assert(row.operatorVersion, 'Invalid operatorVersion for Polygon')
     assert(
-      row.operatorLatestRelease,
+      data.subgraph.block > recentBlock,
+      'Invalid subgraphBlock for Polygon'
+    )
+    assert(data.operator.status === 'UP', 'Invalid operatorStatus for Polygon')
+    assert(
+      data.operator.response === 200,
+      'Invalid operatorResponse for Polygon'
+    )
+    assert(data.operator.version, 'Invalid operatorVersion for Polygon')
+    assert(
+      data.operator.latestRelease,
       'Invalid operatorLatestRelease for Polygon'
     )
     assert(
-      row.operatorEnvironments === Number(process.env.C2D_ENVIRONMENTS),
+      data.operator.environments === Number(process.env.C2D_ENVIRONMENTS),
       'Invalid operatorEnvironments for Polygon'
     )
     assert(
-      row.operatorLimitReached === 0,
+      data.operator.limitReached === false,
       'Invalid operatorLimitReached for Polygon'
     )
-    assert(row.market === 'UP', 'Invalid market for Polygon')
-    assert(row.port === 'UP', 'Invalid port for Polygon')
-    assert(row.faucet === 'N/A', 'Invalid faucet for Polygon')
-    assert(row.faucetResponse === 'N/A', 'Invalid faucetResponse for Polygon')
+    assert(data.market === 'UP', 'Invalid market for Polygon')
+    assert(data.port === 'UP', 'Invalid port for Polygon')
+    assert(data.faucet, 'Invalid faucet for mainnet')
+    assert(Object.keys(data.faucet).length === 0, 'Invalid faucet for mainnet')
     assert(
-      row.faucetEthBalance === 'N/A',
-      'Invalid faucetEthBalance for Polygon'
-    )
-    assert(
-      row.faucetEthBalanceSufficient === 'N/A',
-      'Invalid faucetEthBalanceSufficient for Polygon'
-    )
-    assert(
-      row.faucetOceanBalance === 'N/A',
-      'Invalid faucetOceanBalance for Polygon'
-    )
-    assert(
-      row.faucetOceanBalanceSufficient === 'N/A',
-      'Invalid faucetOceanBalanceSufficient for Polygon'
-    )
-    assert(
-      row.lastUpdatedOn > Date.now() - 50000000,
+      data.lastUpdatedOn > Date.now() - 50000000,
       'Invalid lastUpdatedOn for Polygon'
-    )
-  })
-
-  it('Monitors the current status of OCEAN', async () => {
-    const response = await request(app)
-      .get('/')
-      .expect('Content-Type', /json/)
-      .expect(200)
-
-    assert(
-      response.body.response === 'Database has been updated',
-      'Failed to monitor services and update DB'
     )
   })
 })

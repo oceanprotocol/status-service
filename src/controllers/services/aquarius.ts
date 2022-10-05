@@ -1,7 +1,6 @@
 import fetch from 'cross-fetch'
-import { AquariusStatus, Network } from '../../@types'
+import { AquariusStatus, Network, State } from '../../@types/index'
 import latestRelease from '../utils/github'
-import { getBlock } from '../utils/ethers'
 
 async function aquariusQuery(chainId: string): Promise<boolean> {
   const responcse = await fetch(
@@ -48,7 +47,8 @@ async function aquariusQuery(chainId: string): Promise<boolean> {
 }
 
 export default async function aquariusStatus(
-  network: Network
+  network: Network,
+  currentBlock: number
 ): Promise<AquariusStatus> {
   const status: AquariusStatus = {}
 
@@ -60,28 +60,28 @@ export default async function aquariusStatus(
   const chainResponse = await fetch(
     'https://v4.aquarius.oceanprotocol.com/api/aquarius/chains/list'
   )
-  status.chain = (await chainResponse.json())[network.chainId]
+  status.validChainList = (await chainResponse.json())[network.chainId]
 
   const chainStatus = await fetch(
     `https://v4.aquarius.oceanprotocol.com/api/aquarius/chains/status/${network.chainId}`
   )
+  const chainStatusData = await chainStatus.json()
 
-  status.block = (await chainStatus.json()).last_block
-
-  if (network.name && network.infuraId) {
-    status.latestBlock = await getBlock(network)
-  }
+  status.block = chainStatusData.last_block
+  chainStatusData.version
+    ? (status.monitorVersion = chainStatusData.version)
+    : (status.monitorVersion = 'N/A')
 
   status.validQuery = await aquariusQuery(network.chainId)
 
-  if (status.response !== 200 || !status.chain || !status.validQuery)
-    status.status = 'DOWN'
+  if (status.response !== 200 || !status.validQuery) status.status = State.Down
   else if (
     status.version !== status.latestRelease ||
-    !status.chain ||
-    status.latestBlock >= status.block + Number(process.env.BLOCK_TOLERANCE)
+    status.monitorVersion !== status.latestRelease ||
+    !status.validChainList ||
+    currentBlock >= status.block + Number(process.env.BLOCK_TOLERANCE)
   )
-    status.status = 'WARNING'
-  else status.status = 'UP'
+    status.status = State.Warning
+  else status.status = State.Up
   return status
 }

@@ -1,4 +1,3 @@
-import { Response } from 'express'
 import 'dotenv/config'
 
 import { insert } from './db'
@@ -7,14 +6,15 @@ import marketStatus from './services/market'
 import portStatus from './services/port'
 import providerStatus from './services/provider'
 import subgraphStatus from './services/subgraph'
-import operatorStatus from './services/operatorService'
+import operatorStatus from './services/operator'
 import faucetStatus from './services/faucet'
 import dfStatus from './services/dataFarming'
 import grantsStatus from './services/daoGrants'
 import { Status, Network } from '../@types/index'
 import notification from './notification'
+import { getBlock } from './utils/ethers'
 
-export default async function monitor(res: Response) {
+export default async function monitor(): Promise<string> {
   const networks: Network[] = JSON.parse(process.env.NETWORKS)
   const market = await marketStatus()
   const port = await portStatus()
@@ -23,28 +23,29 @@ export default async function monitor(res: Response) {
   try {
     for (let i = 0; i < networks.length; i++) {
       const network: Network = networks[i]
-      const status: Status = { network: network.name }
+      const currentBlock = await getBlock(network)
+      const provider = await providerStatus(network.name)
+      const subgraph = await subgraphStatus(network, currentBlock)
+      const aquarius = await aquariusStatus(network, currentBlock)
+      const operator = await operatorStatus(network.chainId)
 
-      if (network.faucetWallet && network.infuraId)
+      const status: Status = {
+        network: network.name,
+        currentBlock,
+        market,
+        port,
+        dataFarming,
+        daoGrants,
+        faucet: {},
+        provider,
+        subgraph,
+        aquarius,
+        operator,
+        lastUpdatedOn: Date.now()
+      }
+
+      if (network.faucetWallet && network.rpcUrl)
         status.faucet = await faucetStatus(network)
-      else
-        status.faucet = {
-          status: 'N/A',
-          response: 'N/A',
-          ethBalance: 'N/A',
-          ethBalanceSufficient: 'N/A',
-          oceanBalance: 'N/A',
-          oceanBalanceSufficient: 'N/A'
-        }
-
-      status.provider = await providerStatus(network.name)
-      status.subgraph = await subgraphStatus(network)
-      status.aquarius = await aquariusStatus(network)
-      status.operatorService = await operatorStatus(network.chainId)
-      status.market = market
-      status.port = port
-      status.dataFarming = dataFarming
-      status.daoGrants = daoGrants
 
       // Update DB
       insert(status)
@@ -52,9 +53,10 @@ export default async function monitor(res: Response) {
       notification(status)
     }
 
-    res.send({ response: 'Database has been updated' })
+    return 'Database has been updated'
   } catch (error) {
-    console.log('error: ', error)
-    res.send(error)
+    const response = String(error)
+    console.log('# error: ', response)
+    return `ERROR: ${response}`
   }
 }

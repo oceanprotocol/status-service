@@ -7,7 +7,7 @@ import { connection } from './controllers/db'
 import monitor from './controllers'
 
 const app = express()
-const port = 3000
+const port = process.env.PORT
 
 app.use(express.json())
 app.use(cors())
@@ -26,7 +26,7 @@ cron.schedule(`*/${process.env.INTERVAL} * * * *`, () => {
       Running task every ${process.env.INTERVAL} minutes. 
       Current time: ${Date.now()}`)
 
-    monitor(network.name)
+    monitor()
   })
 })
 

@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch'
 import latestRelease from '../utils/github'
-import { OperatorStatus } from '../../@types'
+import { OperatorStatus, State } from '../../@types'
 
 export default async function operatorStatus(
   chainId: string
@@ -28,13 +28,13 @@ export default async function operatorStatus(
     status.response !== 200 ||
     status.environments < Number(process.env.C2D_ENVIRONMENTS)
   )
-    status.status = 'DOWN'
+    status.status = State.Down
   else if (
     status.version !== status.latestRelease ||
     status.limitReached === true
   )
-    status.status = 'WARNING'
-  else status.status = 'UP'
+    status.status = State.Warning
+  else status.status = State.Up
 
   return status
 }
