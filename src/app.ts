@@ -3,7 +3,6 @@ import cors from 'cors'
 import cron from 'node-cron'
 
 import indexRouter from './routes/index'
-import { connection } from './controllers/db'
 import monitor from './controllers'
 
 const app = express()
@@ -14,7 +13,6 @@ app.use(cors())
 app.use('/', indexRouter)
 
 app.listen(port, async () => {
-  await connection()
   console.log(`Status Service listening at http://localhost:${port}`)
 })
 

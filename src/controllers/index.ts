@@ -1,6 +1,6 @@
 import 'dotenv/config'
+import fetch from 'cross-fetch'
 
-import { insert } from './db'
 import aquariusStatus from './services/aquarius'
 import marketStatus from './services/market'
 import portStatus from './services/port'
@@ -49,7 +49,11 @@ export default async function monitor(): Promise<string> {
 
       // Update DB
       console.log('status', status)
-      insert(status)
+      const dbResponse = await fetch(process.env.STATUS_API_PATH, {
+        method: 'post',
+        body: JSON.stringify({ status })
+      })
+      console.log('dbResponse', dbResponse)
       // send notification email
       notification(status)
     }
