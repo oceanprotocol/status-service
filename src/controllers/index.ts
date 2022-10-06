@@ -49,7 +49,6 @@ export default async function monitor(): Promise<string> {
 
       // Update DB
       const body = JSON.stringify({ status })
-      console.log('body', body)
       const dbResponse = await fetch(process.env.STATUS_API_PATH, {
         method: 'post',
         headers: {
