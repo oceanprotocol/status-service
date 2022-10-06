@@ -48,12 +48,18 @@ export default async function monitor(): Promise<string> {
         status.faucet = await faucetStatus(network)
 
       // Update DB
-      console.log('status', status)
+      const body = JSON.stringify({ status })
+      console.log('body', body)
       const dbResponse = await fetch(process.env.STATUS_API_PATH, {
         method: 'post',
-        body: JSON.stringify({ status })
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body
       })
-      console.log('dbResponse', dbResponse)
+      const responseText = await dbResponse.text()
+      console.log('Database Response:', responseText)
       // send notification email
       notification(status)
     }
