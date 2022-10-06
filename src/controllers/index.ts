@@ -48,6 +48,7 @@ export default async function monitor(): Promise<string> {
         status.faucet = await faucetStatus(network)
 
       // Update DB
+      console.log('status', status)
       insert(status)
       // send notification email
       notification(status)
