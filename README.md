@@ -19,24 +19,10 @@ You may also wish to change the following settings via the environmental variabl
 To run the service locally, use the following command:
 
 ```Bash
-npm run dev
+npm i && npm run dev
 ```
 
-## API Endpoints
-
-### Get the current status of Ocean components on all networks.
-
-```
-GET: http://localhost:3000/
-```
-
-### Get the current status of Ocean components on a given network.
-
-```
-GET: http://localhost:3000/network/mainnet
-```
-
-### Trigger the monitoring of all Ocean components.
+### Force trigger the monitoring of all Ocean components.
 
 ```
 GET: http://localhost:3000/forceUpdate
