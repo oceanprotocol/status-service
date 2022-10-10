@@ -25,7 +25,7 @@ npm i && npm run dev
 ### Force trigger the monitoring of all Ocean components.
 
 ```
-GET: http://localhost:3000/forceUpdate
+GET: http://localhost:8080/forceUpdate
 ```
 
 ## Testing
