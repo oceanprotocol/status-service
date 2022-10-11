@@ -3,7 +3,7 @@ import { AquariusStatus, Network, State } from '../../@types/index'
 import latestRelease from '../utils/github'
 
 async function aquariusQuery(chainId: string): Promise<boolean> {
-  const responcse = await fetch(
+  const response = await fetch(
     `https://v4.aquarius.oceanprotocol.com/api/aquarius/assets/query`,
     {
       method: 'post',
@@ -40,7 +40,7 @@ async function aquariusQuery(chainId: string): Promise<boolean> {
       }`
     }
   )
-  const data = await responcse.json()
+  const data = await response.json()
 
   if (data.hits.hits.length > 0) return true
   else return false
