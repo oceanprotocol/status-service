@@ -1,8 +1,8 @@
-# Status Service
+# Status Monitoring Service
 
 ## Setup
 
-To run the status service, you first need to duplicate the `.env.example` file and rename it as `.env`. You need to replace the following environmental variables:
+To run the status monitoring service, you first need to duplicate the `.env.example` file and rename it as `.env`. You need to replace the following environmental variables:
 
 - For each network you need to provider an RPC URL (`rpcUrl`).
 - You need to create and save your own personal access token (`API_TOKEN_GITHUB`). See [this guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) on how to create the token. The token only needs to have read access for repos.
