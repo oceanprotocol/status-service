@@ -1,6 +1,7 @@
 import request from 'supertest'
 import { assert } from 'chai'
 import app from '../src/app'
+import monitor from '../src/controllers'
 import mail from '../src/controllers/mail'
 import notification from '../src/controllers/notification'
 import { IStatus, State } from '../src/@types'
@@ -110,6 +111,15 @@ describe('Price Request Tests', function () {
   })
 
   it('Monitors the current status of all Ocean components', async () => {
+    const test = true
+    const response = await monitor(test)
+    assert(
+      response === 'Database has been updated',
+      'Failed to monitor services and update DB'
+    )
+  })
+
+  it('Force update the current status of all Ocean components', async () => {
     const response = await request(app)
       .get('/forceUpdate?test=true')
       .expect(200)
