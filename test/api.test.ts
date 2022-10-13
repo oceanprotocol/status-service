@@ -64,7 +64,6 @@ describe('Price Request Tests', function () {
       exampleStatus('mainnet', State.Up, State.Up),
       'mainnet'
     )
-    console.log('notificationResponse', notificationResponse)
     assert(notificationResponse.length === 0, 'wrong notifications - mainnet')
   })
 
@@ -73,7 +72,6 @@ describe('Price Request Tests', function () {
       exampleStatus('mainnet', State.Warning, State.Up),
       'polygon'
     )
-    console.log('notificationResponse', notificationResponse)
     assert(notificationResponse.length === 0, 'wrong notifications - polygon')
   })
 
@@ -82,7 +80,6 @@ describe('Price Request Tests', function () {
       exampleStatus('bsc', State.Down, State.Warning),
       'bsc'
     )
-    console.log('notificationResponse', notificationResponse)
     assert(notificationResponse.length === 4, 'wrong notifications - bsc')
   })
 
@@ -91,7 +88,6 @@ describe('Price Request Tests', function () {
       exampleStatus('energyweb', State.Warning, State.Down),
       'energyweb'
     )
-    console.log('notificationResponse', notificationResponse)
     assert(notificationResponse.length === 4, 'wrong notifications - energyweb')
   })
 
@@ -100,7 +96,6 @@ describe('Price Request Tests', function () {
       exampleStatus('moonriver', State.Down, State.Down),
       'moonriver'
     )
-    console.log('notificationResponse', notificationResponse)
     assert(notificationResponse.length === 8, 'wrong notifications - moonriver')
   })
 
@@ -114,12 +109,14 @@ describe('Price Request Tests', function () {
     assert(mailResp === 'message sent', 'mail not sent - polygon')
   })
 
-  // it('Monitors the current status of all Ocean components', async () => {
-  //   const response = await request(app).get('/forceUpdate').expect(200)
-  //   console.log('response', response.body.response)
-  //   assert(
-  //     response.body.response === 'Database has been updated',
-  //     'Failed to monitor services and update DB'
-  //   )
-  // })
+  it('Monitors the current status of all Ocean components', async () => {
+    const response = await request(app)
+      .get('/forceUpdate?test=true')
+      .expect(200)
+    console.log('response', response.body.response)
+    assert(
+      response.body.response === 'Database has been updated',
+      'Failed to monitor services and update DB'
+    )
+  })
 })

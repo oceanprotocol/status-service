@@ -14,7 +14,7 @@ import { IStatus, INetwork } from '../@types/index'
 import notification from './notification'
 import { getBlock } from './utils/ethers'
 
-export default async function monitor(): Promise<string> {
+export default async function monitor(test?: boolean): Promise<string> {
   const networks: INetwork[] = JSON.parse(process.env.NETWORKS)
   const market = await marketStatus()
   const port = await portStatus()
@@ -48,17 +48,20 @@ export default async function monitor(): Promise<string> {
         status.faucet = await faucetStatus(network)
 
       // Update DB
-      const body = JSON.stringify({ status })
-      const dbResponse = await fetch(process.env.STATUS_API_PATH, {
-        method: 'post',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body
-      })
-      const responseText = await dbResponse.text()
-      console.log('Database Response:', responseText)
+      if (!test) {
+        const body = JSON.stringify({ status })
+        const dbResponse = await fetch(process.env.STATUS_API_PATH, {
+          method: 'post',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body
+        })
+        const responseText = await dbResponse.text()
+        console.log('Database Response:', responseText)
+      }
+
       // send notification email
       notification(status, network.name)
     }

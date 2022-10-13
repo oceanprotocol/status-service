@@ -14,7 +14,9 @@ export default async function faucetStatus(
 
   // Check Faucet ETH Balance for gas
   status.ethBalance = await web3Provider.getBalance(network.faucetWallet)
-  const minEth = BigNumber.from(process.env.MIN_FAUCET_ETH)
+  const minEth = process.env.MIN_FAUCET_ETH
+    ? BigNumber.from(process.env.MIN_FAUCET_ETH)
+    : BigNumber.from('100')
 
   if (minEth.gt(status.ethBalance)) {
     status.ethBalanceSufficient = false
@@ -23,7 +25,10 @@ export default async function faucetStatus(
   // Check Faucet OCEAN Balance
   const contract = new ethers.Contract(network.oceanAddress, abi, web3Provider)
   status.oceanBalance = await contract.balanceOf(network.faucetWallet)
-  const minOcean = BigNumber.from(process.env.MIN_FAUCET_OCEAN)
+
+  const minOcean = process.env.MIN_FAUCET_OCEAN
+    ? BigNumber.from(process.env.MIN_FAUCET_OCEAN)
+    : BigNumber.from('100')
 
   if (minOcean.gt(status.oceanBalance)) {
     status.oceanBalanceSufficient = false

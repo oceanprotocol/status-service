@@ -74,12 +74,16 @@ export default async function aquariusStatus(
 
   status.validQuery = await aquariusQuery(network.chainId)
 
+  const blockTolerance = process.env.BLOCK_TOLERANCE
+    ? process.env.BLOCK_TOLERANCE
+    : '100'
+
   if (status.response !== 200 || !status.validQuery) status.status = State.Down
   else if (
     status.version !== status.latestRelease ||
     status.monitorVersion !== status.latestRelease ||
     !status.validChainList ||
-    currentBlock >= status.block + Number(process.env.BLOCK_TOLERANCE)
+    currentBlock >= status.block + Number(blockTolerance)
   )
     status.status = State.Warning
   else status.status = State.Up

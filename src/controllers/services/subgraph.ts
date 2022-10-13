@@ -124,6 +124,10 @@ export default async function subgraphStatus(
   subgraphStatus.latestRelease = await latestRelease('ocean-subgraph')
   subgraphStatus.response = response.status
 
+  const blockTolerance = process.env.BLOCK_TOLERANCE
+    ? process.env.BLOCK_TOLERANCE
+    : '100'
+
   if (
     subgraphStatus.response !== 200 ||
     data.users.length < 1 ||
@@ -132,8 +136,7 @@ export default async function subgraphStatus(
   )
     subgraphStatus.status = State.Down
   else if (
-    currentBlock >=
-      subgraphStatus.block + Number(process.env.BLOCK_TOLERANCE) ||
+    currentBlock >= subgraphStatus.block + Number(blockTolerance) ||
     subgraphStatus.version !== subgraphStatus.latestRelease
   )
     subgraphStatus.status = State.Warning

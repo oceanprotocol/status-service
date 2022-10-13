@@ -8,6 +8,9 @@ export default async function operatorStatus(
   const status: IOperatorStatus = { limitReached: false }
   const response = await fetch(`https://stagev4.c2d.oceanprotocol.com`)
   const operatorStatus = await response.json()
+  const c2dEnvironment = process.env.C2D_ENVIRONMENTS
+    ? process.env.C2D_ENVIRONMENTS
+    : '2'
   status.response = response.status
   status.version = operatorStatus.version
 
@@ -24,10 +27,7 @@ export default async function operatorStatus(
       return (status.limitReached = true)
   })
 
-  if (
-    status.response !== 200 ||
-    status.environments < Number(process.env.C2D_ENVIRONMENTS)
-  )
+  if (status.response !== 200 || status.environments < Number(c2dEnvironment))
     status.status = State.Down
   else if (
     status.version !== status.latestRelease ||
