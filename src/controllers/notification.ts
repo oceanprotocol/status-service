@@ -1,8 +1,8 @@
-import { Status } from '../@types'
+import { IStatus } from '../@types'
 import mail from './mail'
 
 export default function notification(
-  status: Status,
+  status: IStatus,
   network: string
 ): string[] {
   const summary = [
@@ -28,15 +28,15 @@ export default function notification(
     },
     {
       name: 'Port',
-      status: status.market
+      status: status.port
     },
     {
       name: 'Data Farming (https://df.oceandao.org/rewards)',
-      status: status.market
+      status: status.dataFarming
     },
     {
       name: 'DAO Grants Application Portal (https://seed.oceandao.org/)',
-      status: status.market
+      status: status.daoGrants
     }
   ]
 

@@ -10,7 +10,7 @@ import operatorStatus from './services/operator'
 import faucetStatus from './services/faucet'
 import dfStatus from './services/dataFarming'
 import grantsStatus from './services/daoGrants'
-import { Status, Network } from '../@types/index'
+import { IStatus, Network } from '../@types/index'
 import notification from './notification'
 import { getBlock } from './utils/ethers'
 
