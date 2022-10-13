@@ -21,7 +21,7 @@ export default async function mail(
 
   const info = await transporter.sendMail({
     from: '"Ocean Status Update 🐋" <status@oceanprotocol.com>', // sender address
-    to: process.env.EMAIL,
+    to: test ? 'test@oceanprotocol.com' : process.env.EMAIL,
     subject: 'Service Down',
     text: `The following services are down on ${network}:\n - ${downApps
       .toString()
