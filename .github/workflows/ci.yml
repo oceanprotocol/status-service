@@ -45,7 +45,7 @@ jobs:
           key: ${{ runner.os }}-lint-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-lint-${{ env.cache-name }}-
       - name: Integration tests
+        run: npm ci && npm run test
         env:
           NETWORKS: ${{ secrets.NETWORKS }}
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-        run: npm ci && npm run test
