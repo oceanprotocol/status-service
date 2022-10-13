@@ -48,5 +48,5 @@ jobs:
         env:
           NETWORKS: ${{ secrets.NETWORKS }}
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-        run: npm ci
-        run: npm run test
+      run: npm ci
+      run: npm run test
