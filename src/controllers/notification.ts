@@ -1,7 +1,10 @@
 import { Status } from '../@types'
 import mail from './mail'
 
-export default function notification(status: Status) {
+export default function notification(
+  status: Status,
+  network: string
+): string[] {
   const summary = [
     {
       name: 'Aquarius',
@@ -44,5 +47,6 @@ export default function notification(status: Status) {
       downApps.push(service.name)
     }
   })
-  downApps.length > 0 && mail(downApps)
+  downApps.length > 0 && mail(downApps, network)
+  return downApps
 }
