@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { Network, State, SubgraphStatus } from '../../@types'
+import { INetwork, State, ISubgraphStatus } from '../../@types'
 import latestRelease from '../utils/github'
 
 async function subgraphFetch(network: string, query: string) {
@@ -112,10 +112,10 @@ const query = `{
   }`
 
 export default async function subgraphStatus(
-  network: Network,
+  network: INetwork,
   currentBlock: number
-): Promise<SubgraphStatus> {
-  const subgraphStatus: SubgraphStatus = {}
+): Promise<ISubgraphStatus> {
+  const subgraphStatus: ISubgraphStatus = {}
   const response = await subgraphFetch(network.name, query)
   const data = (await response.json()).data
   subgraphStatus.block = data._meta.block.number

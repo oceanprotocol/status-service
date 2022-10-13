@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import fetch from 'cross-fetch'
 import latestRelease from '../utils/github'
-import { ProviderStatus, State } from '../../@types'
+import { IProviderStatus, State } from '../../@types'
 
 const fileInfoBody = `{
   "url": "https://s3.amazonaws.com/testfiles.oceanprotocol.com/info.0.json",
@@ -91,8 +91,8 @@ async function providerRequest(network: string, path: string, body: string) {
 
 export default async function providerStatus(
   network: string
-): Promise<ProviderStatus> {
-  const providerStatus: ProviderStatus = {}
+): Promise<IProviderStatus> {
+  const providerStatus: IProviderStatus = {}
   const response = await fetch(
     `https://v4.provider.${network}.oceanprotocol.com/`
   )

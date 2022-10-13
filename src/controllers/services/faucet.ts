@@ -1,13 +1,13 @@
 import { ethers, BigNumber } from 'ethers'
 import fetch from 'cross-fetch'
-import { FaucetStatus, Network, State } from '../../@types'
+import { IFaucetStatus, INetwork, State } from '../../@types'
 import getWeb3Provider from '../utils/ethers'
 import abi from '../../abi/token.json'
 
 export default async function faucetStatus(
-  network: Network
-): Promise<FaucetStatus> {
-  const status: FaucetStatus = {}
+  network: INetwork
+): Promise<IFaucetStatus> {
+  const status: IFaucetStatus = {}
 
   if (network.name === 'mumbai') network.name = 'maticmum'
   const web3Provider = getWeb3Provider(network)

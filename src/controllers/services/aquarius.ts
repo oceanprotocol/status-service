@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { AquariusStatus, Network, State } from '../../@types/index'
+import { IAquariusStatus, INetwork, State } from '../../@types/index'
 import latestRelease from '../utils/github'
 
 async function aquariusQuery(chainId: string): Promise<boolean> {
@@ -47,10 +47,10 @@ async function aquariusQuery(chainId: string): Promise<boolean> {
 }
 
 export default async function aquariusStatus(
-  network: Network,
+  network: INetwork,
   currentBlock: number
-): Promise<AquariusStatus> {
-  const status: AquariusStatus = {}
+): Promise<IAquariusStatus> {
+  const status: IAquariusStatus = {}
 
   const response = await fetch('https://v4.aquarius.oceanprotocol.com/')
   status.response = response.status

@@ -1,11 +1,11 @@
 import fetch from 'cross-fetch'
 import latestRelease from '../utils/github'
-import { OperatorStatus, State } from '../../@types'
+import { IOperatorStatus, State } from '../../@types'
 
 export default async function operatorStatus(
   chainId: string
-): Promise<OperatorStatus> {
-  const status: OperatorStatus = { limitReached: false }
+): Promise<IOperatorStatus> {
+  const status: IOperatorStatus = { limitReached: false }
   const response = await fetch(`https://stagev4.c2d.oceanprotocol.com`)
   const operatorStatus = await response.json()
   status.response = response.status
