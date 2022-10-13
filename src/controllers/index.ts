@@ -61,7 +61,6 @@ export default async function monitor(test?: boolean): Promise<string> {
         const responseText = await dbResponse.text()
         console.log('Database Response:', responseText)
       }
-
       // send notification email
       notification(status, network.name)
     }
