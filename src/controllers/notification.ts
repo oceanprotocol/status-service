@@ -2,7 +2,6 @@ import { IStatus, ISummary } from '../@types'
 import mail from './mail'
 
 export default function notification(statuses: IStatus[]): ISummary[] {
-  console.log('statuses', statuses)
   let summaryAll: ISummary[] = []
   statuses.forEach((status) => {
     const summary: ISummary[] = [

@@ -68,23 +68,23 @@ describe('Price Request Tests', function () {
       exampleStatus('energyweb', State.Up, State.Up),
       exampleStatus('moonriver', State.Up, State.Up)
     ])
-    assert(notificationResponse.length === 0, 'wrong notifications - moonriver')
+    assert(notificationResponse.length === 0, '1 wrong notifications')
   })
 
   it('Selects down apps when everything is down on one network', async () => {
     const notificationResponse = await notification([
       exampleStatus('moonriver', State.Down, State.Down)
     ])
-    console.log('notificationResponse.length', notificationResponse.length)
-    assert(notificationResponse.length === 8, 'wrong notifications - moonriver')
+
+    assert(notificationResponse.length === 8, '2 wrong notifications')
   })
 
   it('Selects down apps when half is down on one network', async () => {
     const notificationResponse = await notification([
       exampleStatus('moonriver', State.Up, State.Down)
     ])
-    console.log('notificationResponse.length', notificationResponse.length)
-    assert(notificationResponse.length === 8, 'wrong notifications - moonriver')
+
+    assert(notificationResponse.length === 4, '3 wrong notifications')
   })
 
   it('Selects down apps when half is down on all networks', async () => {
@@ -95,7 +95,7 @@ describe('Price Request Tests', function () {
       exampleStatus('energyweb', State.Down, State.Warning),
       exampleStatus('moonriver', State.Up, State.Down)
     ])
-    console.log('notificationResponse.length', notificationResponse.length)
+
     assert(notificationResponse.length === 20, 'wrong notifications')
   })
 
@@ -107,7 +107,7 @@ describe('Price Request Tests', function () {
       exampleStatus('energyweb', State.Down, State.Down),
       exampleStatus('moonriver', State.Down, State.Down)
     ])
-    console.log('notificationResponse.length', notificationResponse.length)
+
     assert(notificationResponse.length === 40, 'wrong notifications')
   })
 
