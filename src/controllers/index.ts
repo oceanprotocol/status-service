@@ -58,8 +58,6 @@ export default async function monitor(test?: boolean): Promise<string> {
     notification(allStatuses)
     // Update DB
     const dbResponse = await insertMany(allStatuses)
-    console.log('Database Response:', dbResponse)
-
     return dbResponse
   } catch (error) {
     const response = String(error)

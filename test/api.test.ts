@@ -141,7 +141,7 @@ describe('Price Request Tests', function () {
       exampleStatus('energyweb', State.Down, State.Warning),
       exampleStatus('moonriver', State.Up, State.Down)
     ])
-    console.log('TEST: Database Response:', dbResponse)
+
     assert(
       dbResponse === 'status inserted into MongoDB',
       'Failed to monitor services and update DB'
@@ -161,7 +161,7 @@ describe('Price Request Tests', function () {
     const response = await request(app)
       .get('/forceUpdate?test=true')
       .expect(200)
-    console.log('response', response.body.response)
+
     assert(
       response.body.response === 'status inserted into MongoDB',
       'Failed to monitor services and update DB'

@@ -46,10 +46,10 @@ jobs:
           restore-keys: ${{ runner.os }}-lint-${{ env.cache-name }}-
       - name: Integration tests
         uses: supercharge/mongodb-github-action@1.8.0
-          with:
-            mongodb-version: 4.4
-            mongodb-port: 27017
-            mongodb-db: statusHistory
+        with:
+          mongodb-version: 4.4
+          mongodb-port: 27017
+          mongodb-db: statusHistory
         run: npm ci && npm run test
         env:
           NETWORKS: ${{ secrets.NETWORKS }}
