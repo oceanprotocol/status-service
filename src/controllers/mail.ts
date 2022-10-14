@@ -1,9 +1,9 @@
 import nodemailer from 'nodemailer'
 import 'dotenv/config'
+import { ISummary } from '../@types'
 
 export default async function mail(
-  downApps: string[],
-  network: string,
+  downApps: ISummary[],
   test?: boolean
 ): Promise<string> {
   let testAccount
@@ -18,14 +18,19 @@ export default async function mail(
       pass: test ? testAccount.pass : process.env.SMTP_PASS
     }
   })
+  function text(summary: ISummary[]) {
+    const text = `The following services are down on:`
+    summary.forEach((app) => {
+      text + `\n - ${app.name} on ${app.network}`
+    })
+    return text
+  }
 
   const info = await transporter.sendMail({
     from: '"Ocean Status Update 🐋" <status@oceanprotocol.com>', // sender address
     to: test ? 'test@oceanprotocol.com' : process.env.EMAIL,
     subject: 'Service Down',
-    text: `The following services are down on ${network}:\n - ${downApps
-      .toString()
-      .replace(/,/g, '\n- ')}`
+    text: text(downApps)
   })
 
   console.log('Message sent: %s', info.messageId)

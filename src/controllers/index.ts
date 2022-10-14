@@ -15,6 +15,10 @@ import notification from './notification'
 import { getBlock } from './utils/ethers'
 
 export default async function monitor(test?: boolean): Promise<string> {
+  const allStatuses: IStatus[] = []
+  if (!process.env.NETWORKS) {
+    return 'No network data provided'
+  }
   const networks: INetwork[] = JSON.parse(process.env.NETWORKS)
   const market = await marketStatus()
   const port = await portStatus()
@@ -61,10 +65,10 @@ export default async function monitor(test?: boolean): Promise<string> {
         const responseText = await dbResponse.text()
         console.log('Database Response:', responseText)
       }
-      // send notification email
-      notification(status, network.name)
+      allStatuses.push(status)
     }
-
+    // send notification email
+    notification(allStatuses)
     return 'Database has been updated'
   } catch (error) {
     const response = String(error)

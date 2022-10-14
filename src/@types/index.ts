@@ -70,3 +70,9 @@ export interface INetwork {
   rpcUrl?: string
   oceanAddress?: string
 }
+
+export interface ISummary {
+  name: string
+  status: string
+  network: string
+}

@@ -4,7 +4,7 @@ import app from '../src/app'
 import monitor from '../src/controllers'
 import mail from '../src/controllers/mail'
 import notification from '../src/controllers/notification'
-import { IStatus, State } from '../src/@types'
+import { IStatus, ISummary, State } from '../src/@types'
 
 describe('Price Request Tests', function () {
   this.timeout(300000)
@@ -60,54 +60,76 @@ describe('Price Request Tests', function () {
     return status
   }
 
-  it('Selects only down apps for notification email - mainnet', async () => {
-    const notificationResponse = await notification(
+  it('Selects no down apps when nothing is down', async () => {
+    const notificationResponse = await notification([
       exampleStatus('mainnet', State.Up, State.Up),
-      'mainnet'
-    )
-    assert(notificationResponse.length === 0, 'wrong notifications - mainnet')
+      exampleStatus('polygon', State.Up, State.Up),
+      exampleStatus('bsc', State.Up, State.Up),
+      exampleStatus('energyweb', State.Up, State.Up),
+      exampleStatus('moonriver', State.Up, State.Up)
+    ])
+    assert(notificationResponse.length === 0, 'wrong notifications - moonriver')
   })
 
-  it('Selects only down apps for notification email - polygon', async () => {
-    const notificationResponse = await notification(
-      exampleStatus('mainnet', State.Warning, State.Up),
-      'polygon'
-    )
-    assert(notificationResponse.length === 0, 'wrong notifications - polygon')
-  })
-
-  it('Selects only down apps for notification email - bsc', async () => {
-    const notificationResponse = await notification(
-      exampleStatus('bsc', State.Down, State.Warning),
-      'bsc'
-    )
-    assert(notificationResponse.length === 4, 'wrong notifications - bsc')
-  })
-
-  it('Selects only down apps for notification email - energyweb', async () => {
-    const notificationResponse = await notification(
-      exampleStatus('energyweb', State.Warning, State.Down),
-      'energyweb'
-    )
-    assert(notificationResponse.length === 4, 'wrong notifications - energyweb')
-  })
-
-  it('Selects only down apps for notification email - moonriver', async () => {
-    const notificationResponse = await notification(
-      exampleStatus('moonriver', State.Down, State.Down),
-      'moonriver'
-    )
+  it('Selects down apps when everything is down on one network', async () => {
+    const notificationResponse = await notification([
+      exampleStatus('moonriver', State.Down, State.Down)
+    ])
+    console.log('notificationResponse.length', notificationResponse.length)
     assert(notificationResponse.length === 8, 'wrong notifications - moonriver')
   })
 
-  it('Sends notification email - mainnet', async () => {
-    const mailResp = await mail(['market', 'provider', 'port'], 'mainnet', true)
+  it('Selects down apps when half is down on one network', async () => {
+    const notificationResponse = await notification([
+      exampleStatus('moonriver', State.Up, State.Down)
+    ])
+    console.log('notificationResponse.length', notificationResponse.length)
+    assert(notificationResponse.length === 8, 'wrong notifications - moonriver')
+  })
+
+  it('Selects down apps when half is down on all networks', async () => {
+    const notificationResponse = await notification([
+      exampleStatus('mainnet', State.Up, State.Down),
+      exampleStatus('polygon', State.Down, State.Warning),
+      exampleStatus('bsc', State.Up, State.Down),
+      exampleStatus('energyweb', State.Down, State.Warning),
+      exampleStatus('moonriver', State.Up, State.Down)
+    ])
+    console.log('notificationResponse.length', notificationResponse.length)
+    assert(notificationResponse.length === 20, 'wrong notifications')
+  })
+
+  it('Selects only down apps for notification email for multiple networks', async () => {
+    const notificationResponse = await notification([
+      exampleStatus('mainnet', State.Down, State.Down),
+      exampleStatus('polygon', State.Down, State.Down),
+      exampleStatus('bsc', State.Down, State.Down),
+      exampleStatus('energyweb', State.Down, State.Down),
+      exampleStatus('moonriver', State.Down, State.Down)
+    ])
+    console.log('notificationResponse.length', notificationResponse.length)
+    assert(notificationResponse.length === 40, 'wrong notifications')
+  })
+
+  it('Sends notification email when one app is down', async () => {
+    const downApps: ISummary[] = [
+      { name: 'market', status: State.Down, network: 'polygon' }
+    ]
+    const mailResp = await mail(downApps, true)
     assert(mailResp === 'message sent', 'mail not sent - mainnet')
   })
 
-  it('Sends notification email - polygon', async () => {
-    const mailResp = await mail(['aquarius'], 'polygon', true)
-    assert(mailResp === 'message sent', 'mail not sent - polygon')
+  it('Sends notification email when multiple apps are down', async () => {
+    const downApps: ISummary[] = [
+      { name: 'market', status: State.Down, network: 'mainnet' },
+      { name: 'provider', status: State.Down, network: 'polygon' },
+      { name: 'port', status: State.Down, network: 'bsc' },
+      { name: 'aquarius', status: State.Down, network: 'energyweb' },
+      { name: 'subgraph', status: State.Down, network: 'moonriver' },
+      { name: 'Operator Service', status: State.Down, network: 'mumbai' }
+    ]
+    const mailResp = await mail(downApps, true)
+    assert(mailResp === 'message sent', 'mail not sent - mainnet')
   })
 
   it('Monitors the current status of all Ocean components', async () => {
