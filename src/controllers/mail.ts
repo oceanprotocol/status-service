@@ -18,11 +18,12 @@ export default async function mail(
       pass: test ? testAccount.pass : process.env.SMTP_PASS
     }
   })
-  function text(summary: ISummary[]) {
-    const text = `The following services are down on:`
+  function text(summary: ISummary[]): string {
+    let text = '\n'
     summary.forEach((app) => {
-      text + `\n - ${app.name} on ${app.network}`
+      text = text + `\n - ${app.name} on ${app.network}`
     })
+    text = 'The following services are down on:' + text
     return text
   }
 
