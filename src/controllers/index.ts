@@ -13,6 +13,7 @@ import grantsStatus from './services/daoGrants'
 import { IStatus, INetwork } from '../@types/index'
 import notification from './notification'
 import { getBlock } from './utils/ethers'
+import { insertMany } from '../db/mongodb'
 
 export default async function monitor(test?: boolean): Promise<string> {
   const allStatuses: IStatus[] = []
@@ -51,25 +52,15 @@ export default async function monitor(test?: boolean): Promise<string> {
       if (network.faucetWallet && network.rpcUrl)
         status.faucet = await faucetStatus(network)
 
-      // Update DB
-      if (!test) {
-        const body = JSON.stringify({ status })
-        const dbResponse = await fetch(process.env.STATUS_API_PATH, {
-          method: 'post',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body
-        })
-        const responseText = await dbResponse.text()
-        console.log('Database Response:', responseText)
-      }
       allStatuses.push(status)
     }
     // send notification email
     notification(allStatuses)
-    return 'Database has been updated'
+    // Update DB
+    const dbResponse = await insertMany(allStatuses)
+    console.log('Database Response:', dbResponse)
+
+    return dbResponse
   } catch (error) {
     const response = String(error)
     console.log('# error: ', response)

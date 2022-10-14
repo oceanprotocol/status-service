@@ -5,6 +5,7 @@ import monitor from '../src/controllers'
 import mail from '../src/controllers/mail'
 import notification from '../src/controllers/notification'
 import { IStatus, ISummary, State } from '../src/@types'
+import { insertMany } from '../src/db/mongodb'
 
 describe('Price Request Tests', function () {
   this.timeout(300000)
@@ -132,11 +133,26 @@ describe('Price Request Tests', function () {
     assert(mailResp === 'message sent', 'mail not sent - mainnet')
   })
 
+  it('Updates database', async () => {
+    const dbResponse = await insertMany([
+      exampleStatus('mainnet', State.Up, State.Down),
+      exampleStatus('polygon', State.Down, State.Warning),
+      exampleStatus('bsc', State.Up, State.Down),
+      exampleStatus('energyweb', State.Down, State.Warning),
+      exampleStatus('moonriver', State.Up, State.Down)
+    ])
+    console.log('TEST: Database Response:', dbResponse)
+    assert(
+      dbResponse === 'status inserted into MongoDB',
+      'Failed to monitor services and update DB'
+    )
+  })
+
   it('Monitors the current status of all Ocean components', async () => {
     const test = true
     const response = await monitor(test)
     assert(
-      response === 'Database has been updated',
+      response === 'status inserted into MongoDB',
       'Failed to monitor services and update DB'
     )
   })
@@ -147,7 +163,7 @@ describe('Price Request Tests', function () {
       .expect(200)
     console.log('response', response.body.response)
     assert(
-      response.body.response === 'Database has been updated',
+      response.body.response === 'status inserted into MongoDB',
       'Failed to monitor services and update DB'
     )
   })

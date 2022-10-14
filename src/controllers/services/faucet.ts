@@ -1,4 +1,5 @@
-import { ethers, BigNumber } from 'ethers'
+import { ethers } from 'ethers'
+import BigNumber from 'bignumber.js'
 import fetch from 'cross-fetch'
 import { IFaucetStatus, INetwork, State } from '../../@types'
 import getWeb3Provider from '../utils/ethers'
@@ -13,10 +14,12 @@ export default async function faucetStatus(
   const web3Provider = getWeb3Provider(network)
 
   // Check Faucet ETH Balance for gas
-  status.ethBalance = await web3Provider.getBalance(network.faucetWallet)
+  status.ethBalance = await web3Provider
+    .getBalance(network.faucetWallet)
+    .toString()
   const minEth = process.env.MIN_FAUCET_ETH
-    ? BigNumber.from(process.env.MIN_FAUCET_ETH)
-    : BigNumber.from('100')
+    ? new BigNumber(process.env.MIN_FAUCET_ETH)
+    : new BigNumber('100')
 
   if (minEth.gt(status.ethBalance)) {
     status.ethBalanceSufficient = false
@@ -27,8 +30,8 @@ export default async function faucetStatus(
   status.oceanBalance = await contract.balanceOf(network.faucetWallet)
 
   const minOcean = process.env.MIN_FAUCET_OCEAN
-    ? BigNumber.from(process.env.MIN_FAUCET_OCEAN)
-    : BigNumber.from('100')
+    ? new BigNumber(process.env.MIN_FAUCET_OCEAN)
+    : new BigNumber('100')
 
   if (minOcean.gt(status.oceanBalance)) {
     status.oceanBalanceSufficient = false

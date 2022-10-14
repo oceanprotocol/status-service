@@ -1,5 +1,3 @@
-import { BigNumber } from 'ethers'
-
 export enum State {
   Up = 'UP',
   Down = 'DOWN',
@@ -56,9 +54,9 @@ export interface IOperatorStatus {
 export interface IFaucetStatus {
   status?: State
   response?: number
-  ethBalance?: BigNumber
+  ethBalance?: string
   ethBalanceSufficient?: boolean
-  oceanBalance?: BigNumber
+  oceanBalance?: string
   oceanBalanceSufficient?: boolean
 }
 
