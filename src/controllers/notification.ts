@@ -3,7 +3,7 @@ import mail from './mail'
 
 export default function notification(statuses: IStatus[]): ISummary[] {
   console.log('statuses', statuses)
-  const summaryAll: ISummary[] = []
+  let summaryAll: ISummary[] = []
   statuses.forEach((status) => {
     const summary: ISummary[] = [
       {
@@ -47,9 +47,10 @@ export default function notification(statuses: IStatus[]): ISummary[] {
         network: status.network
       }
     ]
-    summaryAll.concat(summary)
+
+    summaryAll = summaryAll.concat(summary)
   })
-  console.log('summaryAll', summaryAll)
+
   const downApps: ISummary[] = []
 
   summaryAll.forEach((service) => {
@@ -58,6 +59,6 @@ export default function notification(statuses: IStatus[]): ISummary[] {
     }
   })
   downApps.length > 0 && mail(downApps)
-  console.log('summaryAll', summaryAll)
+
   return downApps
 }
