@@ -10,4 +10,9 @@ router.get('/forceUpdate', async function (req: Request, res: Response) {
   res.send({ response })
 })
 
+router.get('/', async function (req: Request, res: Response) {
+  // this is need to kubernetes live probe
+  res.send('All good')
+})
+
 export default router
