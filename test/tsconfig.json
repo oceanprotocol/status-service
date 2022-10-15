@@ -5,5 +5,7 @@
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
-  }
+  },
+  "exclude": ["node_modules", "*.js", "*.json"],
+  "include": ["../src/**/*", "../test/**/*"]
 }
