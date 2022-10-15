@@ -14,7 +14,7 @@
     "format": "prettier --ignore-path .gitignore './**/*.{css,yml,js,ts,tsx,json}' --write",
     "test:format": "npm run format && npm run lint",
     "test": "ts-mocha -p test/tsconfig.json --exit test/**/*.test.ts",
-    "type-check": "tsc --noEmit -p test/tsconfig.json"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "bignumber.js": "^9.1.0",
