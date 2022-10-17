@@ -8,13 +8,13 @@
   "scripts": {
     "start": "node dist/app.js",
     "dev": "nodemon src/app.ts",
-    "build": "npm run clean && tsc --sourcemap",
+    "build": "npm run clean && tsc --sourcemap -p tsconfig.json",
     "lint": "eslint --ignore-path .gitignore --ext .js --ext .ts --ext .tsx . && npm run type-check",
     "clean": "rm -rf ./dist",
     "format": "prettier --ignore-path .gitignore './**/*.{css,yml,js,ts,tsx,json}' --write",
     "test:format": "npm run format && npm run lint",
     "test": "ts-mocha -p test/tsconfig.json --exit test/**/*.test.ts",
-    "type-check": "tsc"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "bignumber.js": "^9.1.0",
