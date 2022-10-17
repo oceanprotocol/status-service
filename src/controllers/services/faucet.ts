@@ -1,20 +1,25 @@
-import { ethers, BigNumber } from 'ethers'
+import { ethers } from 'ethers'
+import BigNumber from 'bignumber.js'
 import fetch from 'cross-fetch'
-import { FaucetStatus, Network, State } from '../../@types'
+import { IFaucetStatus, INetwork, State } from '../../@types'
 import getWeb3Provider from '../utils/ethers'
 import abi from '../../abi/token.json'
 
 export default async function faucetStatus(
-  network: Network
-): Promise<FaucetStatus> {
-  const status: FaucetStatus = {}
+  network: INetwork
+): Promise<IFaucetStatus> {
+  const status: IFaucetStatus = {}
 
   if (network.name === 'mumbai') network.name = 'maticmum'
   const web3Provider = getWeb3Provider(network)
 
   // Check Faucet ETH Balance for gas
-  status.ethBalance = await web3Provider.getBalance(network.faucetWallet)
-  const minEth = BigNumber.from(process.env.MIN_FAUCET_ETH)
+  status.ethBalance = await web3Provider
+    .getBalance(network.faucetWallet)
+    .toString()
+  const minEth = process.env.MIN_FAUCET_ETH
+    ? new BigNumber(process.env.MIN_FAUCET_ETH)
+    : new BigNumber('100')
 
   if (minEth.gt(status.ethBalance)) {
     status.ethBalanceSufficient = false
@@ -23,7 +28,10 @@ export default async function faucetStatus(
   // Check Faucet OCEAN Balance
   const contract = new ethers.Contract(network.oceanAddress, abi, web3Provider)
   status.oceanBalance = await contract.balanceOf(network.faucetWallet)
-  const minOcean = BigNumber.from(process.env.MIN_FAUCET_OCEAN)
+
+  const minOcean = process.env.MIN_FAUCET_OCEAN
+    ? new BigNumber(process.env.MIN_FAUCET_OCEAN)
+    : new BigNumber('100')
 
   if (minOcean.gt(status.oceanBalance)) {
     status.oceanBalanceSufficient = false

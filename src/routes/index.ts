@@ -6,8 +6,14 @@ const router = express.Router()
 
 /* GET: trigger the monitoring of all Ocean components. */
 router.get('/forceUpdate', async function (req: Request, res: Response) {
-  const response = await monitor()
-  res.send({ response })
+  try {
+    const test: boolean = req.query.test === 'true' ? true : false
+    const response = await monitor(test)
+    res.send({ response })
+  } catch (error) {
+    console.log(error)
+    res.send({ error })
+  }
 })
 
 router.get('/', async function (req: Request, res: Response) {
