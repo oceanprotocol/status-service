@@ -15,7 +15,7 @@ import notification from './notification'
 import { getBlock } from './utils/ethers'
 import { insertMany } from '../db/mongodb'
 
-export default async function monitor(test?: boolean): Promise<string> {
+export default async function monitor(): Promise<string> {
   const allStatuses: IStatus[] = []
   if (!process.env.NETWORKS) {
     return 'No network data provided'

@@ -93,6 +93,7 @@ export default async function providerStatus(
   network: string
 ): Promise<IProviderStatus> {
   const providerStatus: IProviderStatus = {}
+  console.log(`https://v4.provider.${network}.oceanprotocol.com/`)
   const response = await fetch(
     `https://v4.provider.${network}.oceanprotocol.com/`
   )

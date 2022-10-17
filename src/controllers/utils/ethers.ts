@@ -4,10 +4,7 @@ import { INetwork } from '../../@types'
 export default function getWeb3Provider(
   network: INetwork
 ): ethers.providers.Provider {
-  if (!network.name || !network.rpcUrl) return
-  if (network.name === 'polygon') network.name = 'matic'
-  if (network.name === 'mumbai') network.name = 'maticmum'
-
+  if (!network.rpcUrl) return
   const provider: ethers.providers.JsonRpcProvider =
     new ethers.providers.JsonRpcProvider(network.rpcUrl)
   return provider
