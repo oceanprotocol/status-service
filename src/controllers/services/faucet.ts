@@ -10,7 +10,6 @@ export default async function faucetStatus(
 ): Promise<IFaucetStatus> {
   const status: IFaucetStatus = {}
 
-  if (network.name === 'mumbai') network.name = 'maticmum'
   const web3Provider = getWeb3Provider(network)
 
   // Check Faucet ETH Balance for gas
