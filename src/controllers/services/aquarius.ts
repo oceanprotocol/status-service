@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { AquariusStatus, Network, State } from '../../@types/index'
+import { IAquariusStatus, INetwork, State } from '../../@types/index'
 import latestRelease from '../utils/github'
 
 async function aquariusQuery(chainId: string): Promise<boolean> {
@@ -47,10 +47,10 @@ async function aquariusQuery(chainId: string): Promise<boolean> {
 }
 
 export default async function aquariusStatus(
-  network: Network,
+  network: INetwork,
   currentBlock: number
-): Promise<AquariusStatus> {
-  const status: AquariusStatus = {}
+): Promise<IAquariusStatus> {
+  const status: IAquariusStatus = {}
 
   const response = await fetch('https://v4.aquarius.oceanprotocol.com/')
   status.response = response.status
@@ -74,12 +74,16 @@ export default async function aquariusStatus(
 
   status.validQuery = await aquariusQuery(network.chainId)
 
+  const blockTolerance = process.env.BLOCK_TOLERANCE
+    ? process.env.BLOCK_TOLERANCE
+    : '100'
+
   if (status.response !== 200 || !status.validQuery) status.status = State.Down
   else if (
     status.version !== status.latestRelease ||
     status.monitorVersion !== status.latestRelease ||
     !status.validChainList ||
-    currentBlock >= status.block + Number(process.env.BLOCK_TOLERANCE)
+    currentBlock >= status.block + Number(blockTolerance)
   )
     status.status = State.Warning
   else status.status = State.Up

@@ -1,48 +1,63 @@
-import { Status } from '../@types'
+import { IStatus, ISummary } from '../@types'
 import mail from './mail'
 
-export default function notification(status: Status) {
-  const summary = [
-    {
-      name: 'Aquarius',
-      status: status.aquarius.status
-    },
-    {
-      name: 'Provider',
-      status: status.provider.status
-    },
-    {
-      name: 'Subgraph',
-      status: status.subgraph.status
-    },
-    {
-      name: 'Operator Service',
-      status: status.operator.status
-    },
-    {
-      name: 'Market',
-      status: status.market
-    },
-    {
-      name: 'Port',
-      status: status.market
-    },
-    {
-      name: 'Data Farming (https://df.oceandao.org/rewards)',
-      status: status.market
-    },
-    {
-      name: 'DAO Grants Application Portal (https://seed.oceandao.org/)',
-      status: status.market
-    }
-  ]
+export default function notification(statuses: IStatus[]): ISummary[] {
+  let summaryAll: ISummary[] = []
+  statuses.forEach((status) => {
+    const summary: ISummary[] = [
+      {
+        name: 'Aquarius',
+        status: status.aquarius.status,
+        network: status.network
+      },
+      {
+        name: 'Provider',
+        status: status.provider.status,
+        network: status.network
+      },
+      {
+        name: 'Subgraph',
+        status: status.subgraph.status,
+        network: status.network
+      },
+      {
+        name: 'Operator Service',
+        status: status.operator.status,
+        network: status.network
+      },
+      {
+        name: 'Market',
+        status: status.market,
+        network: status.network
+      },
+      {
+        name: 'Port',
+        status: status.port,
+        network: status.network
+      },
+      {
+        name: 'Data Farming (https://df.oceandao.org/rewards)',
+        status: status.dataFarming,
+        network: status.network
+      },
+      {
+        name: 'DAO Grants Application Portal (https://seed.oceandao.org/)',
+        status: status.daoGrants,
+        network: status.network
+      }
+    ]
 
-  const downApps: string[] = []
+    summaryAll = summaryAll.concat(summary)
+  })
 
-  summary.forEach((service) => {
+  const downApps: ISummary[] = []
+
+  summaryAll.forEach((service) => {
     if (service.status === 'DOWN') {
-      downApps.push(service.name)
+      downApps.push(service)
     }
   })
   downApps.length > 0 && mail(downApps)
+
+  return downApps
 }

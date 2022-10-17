@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { Network, State, SubgraphStatus } from '../../@types'
+import { INetwork, State, ISubgraphStatus } from '../../@types'
 import latestRelease from '../utils/github'
 
 async function subgraphFetch(network: string, query: string) {
@@ -112,10 +112,10 @@ const query = `{
   }`
 
 export default async function subgraphStatus(
-  network: Network,
+  network: INetwork,
   currentBlock: number
-): Promise<SubgraphStatus> {
-  const subgraphStatus: SubgraphStatus = {}
+): Promise<ISubgraphStatus> {
+  const subgraphStatus: ISubgraphStatus = {}
   const response = await subgraphFetch(network.name, query)
   const data = (await response.json()).data
   subgraphStatus.block = data._meta.block.number
@@ -123,6 +123,10 @@ export default async function subgraphStatus(
   subgraphStatus.version = data.globalStatistics[0].version
   subgraphStatus.latestRelease = await latestRelease('ocean-subgraph')
   subgraphStatus.response = response.status
+
+  const blockTolerance = process.env.BLOCK_TOLERANCE
+    ? process.env.BLOCK_TOLERANCE
+    : '100'
 
   if (
     subgraphStatus.response !== 200 ||
@@ -132,8 +136,7 @@ export default async function subgraphStatus(
   )
     subgraphStatus.status = State.Down
   else if (
-    currentBlock >=
-      subgraphStatus.block + Number(process.env.BLOCK_TOLERANCE) ||
+    currentBlock >= subgraphStatus.block + Number(blockTolerance) ||
     subgraphStatus.version !== subgraphStatus.latestRelease
   )
     subgraphStatus.status = State.Warning
