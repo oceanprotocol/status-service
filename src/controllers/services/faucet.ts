@@ -13,18 +13,12 @@ export default async function faucetStatus(
   const web3Provider = getWeb3Provider(network)
 
   // Check Faucet ETH Balance for gas
-  console.log(
-    'await web3Provider.getBalance(network.faucetWallet)',
-    ethers.utils.formatUnits(
-      await (await web3Provider.getBalance(network.faucetWallet)).toString(),
-      18
-    )
-  )
+
   status.ethBalance = ethers.utils.formatUnits(
     await (await web3Provider.getBalance(network.faucetWallet)).toString(),
     18
   )
-  console.log(' status.ethBalance', status.ethBalance)
+
   const minEth = process.env.MIN_FAUCET_ETH
     ? new BigNumber(process.env.MIN_FAUCET_ETH)
     : new BigNumber('100')
