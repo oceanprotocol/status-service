@@ -127,23 +127,23 @@ describe('Monitoring App Tests', function () {
     assert(mailResp === 'message sent', 'mail not sent - mainnet')
   })
 
-  it('Updates database', async () => {
-    const dbResponse = await insertMany([
-      exampleStatus('mainnet', State.Up, State.Down),
-      exampleStatus('polygon', State.Down, State.Warning),
-      exampleStatus('bsc', State.Up, State.Down),
-      exampleStatus('energyweb', State.Down, State.Warning),
-      exampleStatus('moonriver', State.Up, State.Down)
-    ])
-    console.log('dbResponse', dbResponse)
-    assert(dbResponse === 'status inserted into MongoDB', 'Failed to update DB')
-  })
+  // it('Updates database', async () => {
+  //   const dbResponse = await insertMany([
+  //     exampleStatus('mainnet', State.Up, State.Down),
+  //     exampleStatus('polygon', State.Down, State.Warning),
+  //     exampleStatus('bsc', State.Up, State.Down),
+  //     exampleStatus('energyweb', State.Down, State.Warning),
+  //     exampleStatus('moonriver', State.Up, State.Down)
+  //   ])
+  //   console.log('dbResponse', dbResponse)
+  //   assert(dbResponse === 'status inserted into MongoDB', 'Failed to update DB')
+  // })
 
-  it('Monitors the current status of all Ocean components', async () => {
-    const response = await monitor()
-    assert(
-      response === 'status inserted into MongoDB',
-      'Failed to monitor services and update DB'
-    )
-  })
+  // it('Monitors the current status of all Ocean components', async () => {
+  //   const response = await monitor()
+  //   assert(
+  //     response === 'status inserted into MongoDB',
+  //     'Failed to monitor services and update DB'
+  //   )
+  // })
 })
