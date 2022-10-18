@@ -1,9 +1,10 @@
 import { assert } from 'chai'
-import monitor from '../src/controllers'
 import mail from '../src/controllers/mail'
 import notification from '../src/controllers/notification'
 import { IStatus, ISummary, State } from '../src/@types'
 import { insertMany } from '../src/db/mongodb'
+import request from 'supertest'
+import app from '../src/app'
 
 describe('Monitoring App Tests', function () {
   this.timeout(300000)
@@ -127,23 +128,23 @@ describe('Monitoring App Tests', function () {
     assert(mailResp === 'message sent', 'mail not sent - mainnet')
   })
 
-  // it('Updates database', async () => {
-  //   const dbResponse = await insertMany([
-  //     exampleStatus('mainnet', State.Up, State.Down),
-  //     exampleStatus('polygon', State.Down, State.Warning),
-  //     exampleStatus('bsc', State.Up, State.Down),
-  //     exampleStatus('energyweb', State.Down, State.Warning),
-  //     exampleStatus('moonriver', State.Up, State.Down)
-  //   ])
-  //   console.log('dbResponse', dbResponse)
-  //   assert(dbResponse === 'status inserted into MongoDB', 'Failed to update DB')
-  // })
+  it('Force update the current status of all Ocean components', async () => {
+    const response = await request(app).get('/forceUpdate').expect(200)
 
-  // it('Monitors the current status of all Ocean components', async () => {
-  //   const response = await monitor()
-  //   assert(
-  //     response === 'status inserted into MongoDB',
-  //     'Failed to monitor services and update DB'
-  //   )
-  // })
+    assert(
+      response.body.response === 'status inserted into MongoDB',
+      'Failed to monitor services and update DB'
+    )
+  })
+  it('Updates database', async () => {
+    const dbResponse = await insertMany([
+      exampleStatus('mainnet', State.Up, State.Down),
+      exampleStatus('polygon', State.Down, State.Warning),
+      exampleStatus('bsc', State.Up, State.Down),
+      exampleStatus('energyweb', State.Down, State.Warning),
+      exampleStatus('moonriver', State.Up, State.Down)
+    ])
+    console.log('dbResponse', dbResponse)
+    assert(dbResponse === 'status inserted into MongoDB', 'Failed to update DB')
+  })
 })

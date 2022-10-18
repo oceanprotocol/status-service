@@ -8,12 +8,12 @@ export interface IStatus {
   network: string
   currentBlock: number
   market: State
+  dataFarming: State
   faucet: IFaucetStatus | Record<string, never>
   aquarius: IAquariusStatus
   provider: IProviderStatus
   subgraph: ISubgraphStatus
   operator: IOperatorStatus
-  dataFarming: State
   lastUpdatedOn: number
 }
 export interface IProviderStatus {
