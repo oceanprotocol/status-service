@@ -75,7 +75,7 @@ describe('Price Request Tests', function () {
       exampleStatus('moonriver', State.Down, State.Down)
     ])
 
-    assert(notificationResponse.length === 8, '2 wrong notifications')
+    assert(notificationResponse.length === 6, '2 wrong notifications')
   })
 
   it('Selects down apps when half is down on one network', async () => {
@@ -83,7 +83,7 @@ describe('Price Request Tests', function () {
       exampleStatus('moonriver', State.Up, State.Down)
     ])
 
-    assert(notificationResponse.length === 4, '3 wrong notifications')
+    assert(notificationResponse.length === 2, '3 wrong notifications')
   })
 
   it('Selects down apps when half is down on all networks', async () => {
@@ -95,7 +95,7 @@ describe('Price Request Tests', function () {
       exampleStatus('moonriver', State.Up, State.Down)
     ])
 
-    assert(notificationResponse.length === 20, 'wrong notifications')
+    assert(notificationResponse.length === 14, 'wrong notifications')
   })
 
   it('Selects only down apps for notification email for multiple networks', async () => {
@@ -106,8 +106,7 @@ describe('Price Request Tests', function () {
       exampleStatus('energyweb', State.Down, State.Down),
       exampleStatus('moonriver', State.Down, State.Down)
     ])
-
-    assert(notificationResponse.length === 40, 'wrong notifications')
+    assert(notificationResponse.length === 30, 'wrong notifications')
   })
 
   it('Sends notification email when one app is down', async () => {
@@ -149,15 +148,6 @@ describe('Price Request Tests', function () {
     const response = await monitor()
     assert(
       response === 'status inserted into MongoDB',
-      'Failed to monitor services and update DB'
-    )
-  })
-
-  it('Force update the current status of all Ocean components', async () => {
-    const response = await request(app).get('/forceUpdate').expect(200)
-
-    assert(
-      response.body.response === 'status inserted into MongoDB',
       'Failed to monitor services and update DB'
     )
   })
