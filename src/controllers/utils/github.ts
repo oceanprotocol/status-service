@@ -9,6 +9,9 @@ export default async function latestRelease(repo: string) {
     const response = await octokit.request(
       `GET /repos/oceanprotocol/${repo}/releases`
     )
+    console.log(
+      `Github request remaining ${response.headers['x-ratelimit-remaining']}`
+    )
     const version = response.data[0].name
       .replace(' ', '')
       .replace('v', '')

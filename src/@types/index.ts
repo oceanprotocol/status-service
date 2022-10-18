@@ -8,18 +8,17 @@ export interface IStatus {
   network: string
   currentBlock: number
   market: State
-  port: State
   faucet: IFaucetStatus | Record<string, never>
   aquarius: IAquariusStatus
   provider: IProviderStatus
   subgraph: ISubgraphStatus
   operator: IOperatorStatus
   dataFarming: State
-  daoGrants: State
   lastUpdatedOn: number
 }
 export interface IProviderStatus {
   status?: State
+  statusMessages?: string
   response?: number
   version?: string
   latestRelease?: string
@@ -27,6 +26,7 @@ export interface IProviderStatus {
 
 export interface IAquariusStatus {
   status?: State
+  statusMessages?: string
   response?: number
   validChainList?: boolean
   version?: string
@@ -37,6 +37,7 @@ export interface IAquariusStatus {
 }
 export interface ISubgraphStatus {
   status?: State
+  statusMessages?: string
   response?: number
   version?: string
   latestRelease?: string
@@ -45,6 +46,7 @@ export interface ISubgraphStatus {
 
 export interface IOperatorStatus {
   status?: State
+  statusMessages?: string
   response?: number
   version?: string
   latestRelease?: string
@@ -53,6 +55,7 @@ export interface IOperatorStatus {
 }
 export interface IFaucetStatus {
   status?: State
+  statusMessages?: string
   response?: number
   ethBalance?: string
   ethBalanceSufficient?: boolean
@@ -73,4 +76,11 @@ export interface ISummary {
   name: string
   status: string
   network: string
+}
+
+export interface ICurrentVersions {
+  providerLatestVersion: string
+  aquariusLatestVersion: string
+  subgraphLatestVersion: string
+  operatorLatestVersion: string
 }

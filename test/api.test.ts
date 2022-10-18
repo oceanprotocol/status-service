@@ -21,9 +21,7 @@ describe('Price Request Tests', function () {
       network: network,
       currentBlock: recentBlock,
       market: state1,
-      port: state2,
       dataFarming: state1,
-      daoGrants: state2,
       faucet: {},
       provider: {
         response: 200,
@@ -149,8 +147,7 @@ describe('Price Request Tests', function () {
   })
 
   it('Monitors the current status of all Ocean components', async () => {
-    const test = true
-    const response = await monitor(test)
+    const response = await monitor()
     assert(
       response === 'status inserted into MongoDB',
       'Failed to monitor services and update DB'
@@ -158,9 +155,7 @@ describe('Price Request Tests', function () {
   })
 
   it('Force update the current status of all Ocean components', async () => {
-    const response = await request(app)
-      .get('/forceUpdate?test=true')
-      .expect(200)
+    const response = await request(app).get('/forceUpdate').expect(200)
 
     assert(
       response.body.response === 'status inserted into MongoDB',

@@ -17,18 +17,11 @@ app.use('/', indexRouter)
 app.listen(port, async () => {
   await connection()
   console.log(`Status Service listening at http://localhost:${port}`)
+  monitor()
 })
 
 cron.schedule(`*/${cronInterval} * * * *`, () => {
-  const networks = JSON.parse(process.env.NETWORKS)
-  networks.forEach((network) => {
-    console.log(`
-      Monitor status for ${network.name}.
-      Running task every ${cronInterval} minutes. 
-      Current time: ${Date.now()}`)
-
-    monitor()
-  })
+  monitor()
 })
 
 export default app
