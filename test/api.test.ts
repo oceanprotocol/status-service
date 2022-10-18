@@ -122,7 +122,6 @@ describe('Price Request Tests', function () {
     const downApps: ISummary[] = [
       { name: 'market', status: State.Down, network: 'mainnet' },
       { name: 'provider', status: State.Down, network: 'polygon' },
-      { name: 'port', status: State.Down, network: 'bsc' },
       { name: 'aquarius', status: State.Down, network: 'energyweb' },
       { name: 'subgraph', status: State.Down, network: 'moonriver' },
       { name: 'Operator Service', status: State.Down, network: 'mumbai' }
