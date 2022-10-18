@@ -31,18 +31,8 @@ export default function notification(statuses: IStatus[]): ISummary[] {
         network: status.network
       },
       {
-        name: 'Port',
-        status: status.port,
-        network: status.network
-      },
-      {
         name: 'Data Farming (https://df.oceandao.org/rewards)',
         status: status.dataFarming,
-        network: status.network
-      },
-      {
-        name: 'DAO Grants Application Portal (https://seed.oceandao.org/)',
-        status: status.daoGrants,
         network: status.network
       }
     ]

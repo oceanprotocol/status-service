@@ -1,6 +1,9 @@
 import fetch from 'cross-fetch'
 import { INetwork, State, ISubgraphStatus } from '../../@types'
-import latestRelease from '../utils/github'
+import {
+  getBlockMissmatchError,
+  getVersionMissmatchError
+} from '../utils/messages'
 
 async function subgraphFetch(network: string, query: string) {
   const response = await fetch(
@@ -113,7 +116,8 @@ const query = `{
 
 export default async function subgraphStatus(
   network: INetwork,
-  currentBlock: number
+  currentBlock: number,
+  latestRelease: string
 ): Promise<ISubgraphStatus> {
   const subgraphStatus: ISubgraphStatus = {}
   const response = await subgraphFetch(network.name, query)
@@ -121,7 +125,7 @@ export default async function subgraphStatus(
   subgraphStatus.block = data._meta.block.number
 
   subgraphStatus.version = data.globalStatistics[0].version
-  subgraphStatus.latestRelease = await latestRelease('ocean-subgraph')
+  subgraphStatus.latestRelease = latestRelease
   subgraphStatus.response = response.status
 
   const blockTolerance = process.env.BLOCK_TOLERANCE
@@ -135,12 +139,27 @@ export default async function subgraphStatus(
     data.nfts.length < 1
   )
     subgraphStatus.status = State.Down
-  else if (
-    currentBlock >= subgraphStatus.block + Number(blockTolerance) ||
-    subgraphStatus.version !== subgraphStatus.latestRelease
-  )
+  else if (currentBlock >= subgraphStatus.block + Number(blockTolerance))
     subgraphStatus.status = State.Warning
   else subgraphStatus.status = State.Up
 
+  const statusMessages = []
+  if (subgraphStatus.version !== subgraphStatus.latestRelease)
+    statusMessages.push(
+      getVersionMissmatchError(
+        'Subgraph',
+        subgraphStatus.version,
+        subgraphStatus.latestRelease
+      )
+    )
+  if (currentBlock >= subgraphStatus.block + Number(blockTolerance))
+    statusMessages.push(
+      getBlockMissmatchError(
+        'Subgraph',
+        subgraphStatus.block.toString(),
+        currentBlock.toString()
+      )
+    )
+  subgraphStatus.statusMessages = statusMessages.toString()
   return subgraphStatus
 }

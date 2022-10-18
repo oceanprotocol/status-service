@@ -1,13 +1,11 @@
-import request from 'supertest'
 import { assert } from 'chai'
-import app from '../src/app'
 import monitor from '../src/controllers'
 import mail from '../src/controllers/mail'
 import notification from '../src/controllers/notification'
 import { IStatus, ISummary, State } from '../src/@types'
 import { insertMany } from '../src/db/mongodb'
 
-describe('Price Request Tests', function () {
+describe('Monitoring App Tests', function () {
   this.timeout(300000)
   const recentBlock = Math.floor(Math.random() * 1000000)
   const date = Date.now()
@@ -21,9 +19,7 @@ describe('Price Request Tests', function () {
       network: network,
       currentBlock: recentBlock,
       market: state1,
-      port: state2,
       dataFarming: state1,
-      daoGrants: state2,
       faucet: {},
       provider: {
         response: 200,
@@ -77,7 +73,7 @@ describe('Price Request Tests', function () {
       exampleStatus('moonriver', State.Down, State.Down)
     ])
 
-    assert(notificationResponse.length === 8, '2 wrong notifications')
+    assert(notificationResponse.length === 6, '2 wrong notifications')
   })
 
   it('Selects down apps when half is down on one network', async () => {
@@ -85,7 +81,7 @@ describe('Price Request Tests', function () {
       exampleStatus('moonriver', State.Up, State.Down)
     ])
 
-    assert(notificationResponse.length === 4, '3 wrong notifications')
+    assert(notificationResponse.length === 2, '3 wrong notifications')
   })
 
   it('Selects down apps when half is down on all networks', async () => {
@@ -97,7 +93,7 @@ describe('Price Request Tests', function () {
       exampleStatus('moonriver', State.Up, State.Down)
     ])
 
-    assert(notificationResponse.length === 20, 'wrong notifications')
+    assert(notificationResponse.length === 14, 'wrong notifications')
   })
 
   it('Selects only down apps for notification email for multiple networks', async () => {
@@ -108,8 +104,7 @@ describe('Price Request Tests', function () {
       exampleStatus('energyweb', State.Down, State.Down),
       exampleStatus('moonriver', State.Down, State.Down)
     ])
-
-    assert(notificationResponse.length === 40, 'wrong notifications')
+    assert(notificationResponse.length === 30, 'wrong notifications')
   })
 
   it('Sends notification email when one app is down', async () => {
@@ -124,7 +119,6 @@ describe('Price Request Tests', function () {
     const downApps: ISummary[] = [
       { name: 'market', status: State.Down, network: 'mainnet' },
       { name: 'provider', status: State.Down, network: 'polygon' },
-      { name: 'port', status: State.Down, network: 'bsc' },
       { name: 'aquarius', status: State.Down, network: 'energyweb' },
       { name: 'subgraph', status: State.Down, network: 'moonriver' },
       { name: 'Operator Service', status: State.Down, network: 'mumbai' }
@@ -141,29 +135,14 @@ describe('Price Request Tests', function () {
       exampleStatus('energyweb', State.Down, State.Warning),
       exampleStatus('moonriver', State.Up, State.Down)
     ])
-
-    assert(
-      dbResponse === 'status inserted into MongoDB',
-      'Failed to monitor services and update DB'
-    )
+    console.log('dbResponse', dbResponse)
+    assert(dbResponse === 'status inserted into MongoDB', 'Failed to update DB')
   })
 
   it('Monitors the current status of all Ocean components', async () => {
-    const test = true
-    const response = await monitor(test)
+    const response = await monitor()
     assert(
       response === 'status inserted into MongoDB',
-      'Failed to monitor services and update DB'
-    )
-  })
-
-  it('Force update the current status of all Ocean components', async () => {
-    const response = await request(app)
-      .get('/forceUpdate?test=true')
-      .expect(200)
-
-    assert(
-      response.body.response === 'status inserted into MongoDB',
       'Failed to monitor services and update DB'
     )
   })

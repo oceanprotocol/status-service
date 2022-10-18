@@ -5,7 +5,12 @@ export const statusSchema = new Schema<IStatus>({
   network: { type: String, required: true },
   currentBlock: { type: Number, required: true },
   market: { type: String, enum: State, required: true, default: State.Warning },
-  port: { type: String, enum: State, required: true, default: State.Warning },
+  dataFarming: {
+    type: String,
+    enum: State,
+    required: true,
+    default: State.Warning
+  },
   faucet: {
     status: {
       type: String,
@@ -24,6 +29,7 @@ export const statusSchema = new Schema<IStatus>({
       required: true,
       default: State.Warning
     },
+    statusMessages: String,
     response: Number,
     validChainList: Boolean,
     version: String,
@@ -39,6 +45,7 @@ export const statusSchema = new Schema<IStatus>({
       required: true,
       default: State.Warning
     },
+    statusMessages: String,
     response: Number,
     version: String,
     latestRelease: String
@@ -50,6 +57,7 @@ export const statusSchema = new Schema<IStatus>({
       required: true,
       default: State.Warning
     },
+    statusMessages: String,
     response: Number,
     version: String,
     latestRelease: String,
@@ -62,23 +70,13 @@ export const statusSchema = new Schema<IStatus>({
       required: true,
       default: State.Warning
     },
+    statusMessages: String,
     response: Number,
     version: String,
     latestRelease: String,
     environments: Number,
     limitReached: Boolean
   },
-  dataFarming: {
-    type: String,
-    enum: State,
-    required: true,
-    default: State.Warning
-  },
-  daoGrants: {
-    type: String,
-    enum: State,
-    required: true,
-    default: State.Warning
-  },
+
   lastUpdatedOn: { type: Number, required: true, default: Date.now }
 })

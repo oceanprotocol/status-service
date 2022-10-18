@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import fetch from 'cross-fetch'
-import latestRelease from '../utils/github'
 import { IProviderStatus, State } from '../../@types'
+import { getVersionMissmatchError } from '../utils/messages'
 
 const fileInfoBody = `{
   "url": "https://s3.amazonaws.com/testfiles.oceanprotocol.com/info.0.json",
@@ -90,7 +90,8 @@ async function providerRequest(network: string, path: string, body: string) {
 }
 
 export default async function providerStatus(
-  network: string
+  network: string,
+  latestRelease: string
 ): Promise<IProviderStatus> {
   const providerStatus: IProviderStatus = {}
   const response = await fetch(
@@ -98,7 +99,7 @@ export default async function providerStatus(
   )
   providerStatus.response = response.status
   providerStatus.version = (await response.json()).version
-  providerStatus.latestRelease = await latestRelease('provider')
+  providerStatus.latestRelease = latestRelease
 
   const fileInfo = (await providerRequest(network, 'fileinfo', fileInfoBody))[0]
   const initialize = await fetch(
@@ -113,9 +114,18 @@ export default async function providerStatus(
 
   if (response.status !== 200 && !fileInfo.valid && !validDt)
     providerStatus.status = State.Down
-  else if (providerStatus.version !== providerStatus.latestRelease)
-    providerStatus.status = State.Warning
   else providerStatus.status = State.Up
 
+  const statusMessages = []
+  if (providerStatus.version !== providerStatus.latestRelease)
+    statusMessages.push(
+      getVersionMissmatchError(
+        'Provider',
+        providerStatus.version,
+        providerStatus.latestRelease
+      )
+    )
+  if (!fileInfo.valid) statusMessages.push(`Initialize info endpoint failing`)
+  providerStatus.statusMessages = statusMessages.toString()
   return providerStatus
 }
