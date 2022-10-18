@@ -1,13 +1,11 @@
-import request from 'supertest'
 import { assert } from 'chai'
-import app from '../src/app'
 import monitor from '../src/controllers'
 import mail from '../src/controllers/mail'
 import notification from '../src/controllers/notification'
 import { IStatus, ISummary, State } from '../src/@types'
 import { insertMany } from '../src/db/mongodb'
 
-describe('Price Request Tests', function () {
+describe('Monitoring App Tests', function () {
   this.timeout(300000)
   const recentBlock = Math.floor(Math.random() * 1000000)
   const date = Date.now()
@@ -137,11 +135,8 @@ describe('Price Request Tests', function () {
       exampleStatus('energyweb', State.Down, State.Warning),
       exampleStatus('moonriver', State.Up, State.Down)
     ])
-
-    assert(
-      dbResponse === 'status inserted into MongoDB',
-      'Failed to monitor services and update DB'
-    )
+    console.log('dbResponse', dbResponse)
+    assert(dbResponse === 'status inserted into MongoDB', 'Failed to update DB')
   })
 
   it('Monitors the current status of all Ocean components', async () => {
