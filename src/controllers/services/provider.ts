@@ -116,16 +116,16 @@ export default async function providerStatus(
     providerStatus.status = State.Down
   else providerStatus.status = State.Up
 
-  const statusMessages = []
+  providerStatus.statusMessages = []
   if (providerStatus.version !== providerStatus.latestRelease)
-    statusMessages.push(
+    providerStatus.statusMessages.push(
       getVersionMissmatchError(
-        'Provider',
         providerStatus.version,
         providerStatus.latestRelease
       )
     )
-  if (!fileInfo.valid) statusMessages.push(`Initialize info endpoint failing`)
-  providerStatus.statusMessages = statusMessages.toString()
+  if (!fileInfo.valid)
+    providerStatus.statusMessages.push(`Initialize info endpoint failing`)
+
   return providerStatus
 }

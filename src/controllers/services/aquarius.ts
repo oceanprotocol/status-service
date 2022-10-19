@@ -90,30 +90,22 @@ export default async function aquariusStatus(
     status.status = State.Warning
   else status.status = State.Up
 
-  const statusMessages = []
+  status.statusMessages = []
   if (status.version !== status.latestRelease)
-    statusMessages.push(
-      getVersionMissmatchError('Aqurius', status.version, status.latestRelease)
+    status.statusMessages.push(
+      getVersionMissmatchError(status.version, status.latestRelease)
     )
   if (status.monitorVersion !== status.latestRelease)
-    statusMessages.push(
-      getVersionMissmatchError(
-        'Aqurius event monitor',
-        status.monitorVersion,
-        status.latestRelease
-      )
+    status.statusMessages.push(
+      getVersionMissmatchError(status.monitorVersion, status.latestRelease)
     )
   if (!status.validChainList)
-    statusMessages.push(`Event monitor not defined for this network`)
+    status.statusMessages.push(`Event monitor not defined for this network`)
 
   if (currentBlock >= status.block + Number(blockTolerance))
-    statusMessages.push(
-      getBlockMissmatchError(
-        'Aqurius event monitor',
-        status.block.toString(),
-        currentBlock.toString()
-      )
+    status.statusMessages.push(
+      getBlockMissmatchError(status.block.toString(), currentBlock.toString())
     )
-  status.statusMessages = statusMessages.toString()
+
   return status
 }

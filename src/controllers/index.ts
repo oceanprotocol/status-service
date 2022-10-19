@@ -42,19 +42,21 @@ async function getStatus(
 
   const status: IStatus = {
     network: network.name,
-    market: marketState,
-    dataFarming: dfState,
+    market: { status: marketState },
+    dataFarming: { status: dfState },
     currentBlock,
-    faucet: {},
-    provider,
-    subgraph,
-    aquarius,
-    operator,
+    components: {
+      faucet: {},
+      provider,
+      subgraph,
+      aquarius,
+      operator
+    },
     lastUpdatedOn: Date.now()
   }
 
   if (network.faucetWallet && network.rpcUrl)
-    status.faucet = await faucetStatus(network)
+    status.components.faucet = await faucetStatus(network)
   console.timeEnd(`Finished checking componentes for ${network.name}`)
   return status
 }

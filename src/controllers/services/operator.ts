@@ -29,25 +29,20 @@ export default async function operatorStatus(
     if (environment.currentJobs >= environment.maxJobs)
       return (status.limitReached = true)
   })
-  const statusMessages = []
+  status.statusMessages = []
   if (status.response !== 200 || status.environments < Number(c2dEnvironment))
     status.status = State.Down
   else if (status.limitReached === true) {
-    statusMessages.push(
+    status.statusMessages.push(
       `Maximum job limit of ${maxJobs.toString()} has been reached`
     )
     status.status = State.Warning
   } else status.status = State.Up
 
   if (status.version !== status.latestRelease)
-    statusMessages.push(
-      getVersionMissmatchError(
-        'Operator service',
-        status.version,
-        status.latestRelease
-      )
+    status.statusMessages.push(
+      getVersionMissmatchError(status.version, status.latestRelease)
     )
 
-  status.statusMessages = statusMessages.toString()
   return status
 }

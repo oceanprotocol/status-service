@@ -7,32 +7,32 @@ export default function notification(statuses: IStatus[]): ISummary[] {
     const summary: ISummary[] = [
       {
         name: 'Aquarius',
-        status: status.aquarius.status,
+        status: status.components.aquarius.status,
         network: status.network
       },
       {
         name: 'Provider',
-        status: status.provider.status,
+        status: status.components.provider.status,
         network: status.network
       },
       {
         name: 'Subgraph',
-        status: status.subgraph.status,
+        status: status.components.subgraph.status,
         network: status.network
       },
       {
         name: 'Operator Service',
-        status: status.operator.status,
+        status: status.components.operator.status,
         network: status.network
       },
       {
         name: 'Market',
-        status: status.market,
+        status: status.market.status,
         network: status.network
       },
       {
         name: 'Data Farming (https://df.oceandao.org/rewards)',
-        status: status.dataFarming,
+        status: status.dataFarming.status,
         network: status.network
       }
     ]

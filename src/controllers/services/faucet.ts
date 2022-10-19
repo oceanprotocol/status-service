@@ -54,10 +54,11 @@ export default async function faucetStatus(
   )
     status.status = State.Up
   else status.status = State.Down
-  const statusMessages = []
-  if (!status.ethBalanceSufficient) statusMessages.push(`Insufficient eth`)
-  if (!status.ethBalanceSufficient) statusMessages.push(`Insufficient ocean`)
+  status.statusMessages = []
+  if (!status.ethBalanceSufficient)
+    status.statusMessages.push(`Insufficient eth`)
+  if (!status.ethBalanceSufficient)
+    status.statusMessages.push(`Insufficient ocean`)
 
-  status.statusMessages = statusMessages.toString()
   return status
 }

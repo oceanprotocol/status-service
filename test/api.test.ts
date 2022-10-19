@@ -19,39 +19,41 @@ describe('Monitoring App Tests', function () {
     const status: IStatus = {
       network: network,
       currentBlock: recentBlock,
-      market: state1,
-      dataFarming: state1,
-      faucet: {},
-      provider: {
-        response: 200,
-        version: '1.0.20',
-        latestRelease: '1.3.4',
-        status: state1
-      },
-      subgraph: {
-        block: recentBlock,
-        version: '2.1.3',
-        latestRelease: '2.1.3',
-        response: 200,
-        status: state2
-      },
-      aquarius: {
-        response: 200,
-        version: '4.4.2',
-        latestRelease: '4.5.1',
-        validChainList: true,
-        block: recentBlock,
-        monitorVersion: '4.5.1',
-        validQuery: true,
-        status: state1
-      },
-      operator: {
-        limitReached: false,
-        response: 200,
-        version: '1.0.1',
-        latestRelease: '1.0.1',
-        environments: 2,
-        status: state2
+      market: { status: state1 },
+      dataFarming: { status: state1 },
+      components: {
+        faucet: {},
+        provider: {
+          response: 200,
+          version: '1.0.20',
+          latestRelease: '1.3.4',
+          status: state1
+        },
+        subgraph: {
+          block: recentBlock,
+          version: '2.1.3',
+          latestRelease: '2.1.3',
+          response: 200,
+          status: state2
+        },
+        aquarius: {
+          response: 200,
+          version: '4.4.2',
+          latestRelease: '4.5.1',
+          validChainList: true,
+          block: recentBlock,
+          monitorVersion: '4.5.1',
+          validQuery: true,
+          status: state1
+        },
+        operator: {
+          limitReached: false,
+          response: 200,
+          version: '1.0.1',
+          latestRelease: '1.0.1',
+          environments: 2,
+          status: state2
+        }
       },
       lastUpdatedOn: date
     }
@@ -144,7 +146,6 @@ describe('Monitoring App Tests', function () {
       exampleStatus('energyweb', State.Down, State.Warning),
       exampleStatus('moonriver', State.Up, State.Down)
     ])
-    console.log('dbResponse', dbResponse)
     assert(dbResponse === 'status inserted into MongoDB', 'Failed to update DB')
   })
 })

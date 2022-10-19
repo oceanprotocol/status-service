@@ -143,23 +143,20 @@ export default async function subgraphStatus(
     subgraphStatus.status = State.Warning
   else subgraphStatus.status = State.Up
 
-  const statusMessages = []
+  subgraphStatus.statusMessages = []
   if (subgraphStatus.version !== subgraphStatus.latestRelease)
-    statusMessages.push(
+    subgraphStatus.statusMessages.push(
       getVersionMissmatchError(
-        'Subgraph',
         subgraphStatus.version,
         subgraphStatus.latestRelease
       )
     )
   if (currentBlock >= subgraphStatus.block + Number(blockTolerance))
-    statusMessages.push(
+    subgraphStatus.statusMessages.push(
       getBlockMissmatchError(
-        'Subgraph',
         subgraphStatus.block.toString(),
         currentBlock.toString()
       )
     )
-  subgraphStatus.statusMessages = statusMessages.toString()
   return subgraphStatus
 }
