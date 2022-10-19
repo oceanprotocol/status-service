@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { INetwork, State, ISubgraphStatus } from '../../@types'
+import { INetwork, State, IComponentStatus } from '../../@types'
 import {
   getBlockMissmatchError,
   getVersionMissmatchError
@@ -118,45 +118,54 @@ export default async function subgraphStatus(
   network: INetwork,
   currentBlock: number,
   latestRelease: string
-): Promise<ISubgraphStatus> {
-  const subgraphStatus: ISubgraphStatus = {}
-  const response = await subgraphFetch(network.name, query)
-  const data = (await response.json()).data
-  subgraphStatus.block = data._meta.block.number
+): Promise<IComponentStatus> {
+  const subgraphStatus: IComponentStatus = {
+    name: 'subgraph',
+    status: State.Down,
+    response: 500
+  }
+  try {
+    const response = await subgraphFetch(network.name, query)
+    const data = (await response.json()).data
+    subgraphStatus.block = data._meta.block.number
 
-  subgraphStatus.version = data.globalStatistics[0].version
-  subgraphStatus.latestRelease = latestRelease
-  subgraphStatus.response = response.status
+    subgraphStatus.version = data.globalStatistics[0].version
+    subgraphStatus.latestRelease = latestRelease
+    subgraphStatus.response = response.status
 
-  const blockTolerance = process.env.BLOCK_TOLERANCE
-    ? process.env.BLOCK_TOLERANCE
-    : '100'
+    const blockTolerance = process.env.BLOCK_TOLERANCE
+      ? process.env.BLOCK_TOLERANCE
+      : '100'
 
-  if (
-    subgraphStatus.response !== 200 ||
-    data.users.length < 1 ||
-    data.tokens.length < 1 ||
-    data.nfts.length < 1
-  )
-    subgraphStatus.status = State.Down
-  else if (currentBlock >= subgraphStatus.block + Number(blockTolerance))
-    subgraphStatus.status = State.Warning
-  else subgraphStatus.status = State.Up
-
-  subgraphStatus.statusMessages = []
-  if (subgraphStatus.version !== subgraphStatus.latestRelease)
-    subgraphStatus.statusMessages.push(
-      getVersionMissmatchError(
-        subgraphStatus.version,
-        subgraphStatus.latestRelease
-      )
+    if (
+      subgraphStatus.response !== 200 ||
+      data.users.length < 1 ||
+      data.tokens.length < 1 ||
+      data.nfts.length < 1
     )
-  if (currentBlock >= subgraphStatus.block + Number(blockTolerance))
-    subgraphStatus.statusMessages.push(
-      getBlockMissmatchError(
-        subgraphStatus.block.toString(),
-        currentBlock.toString()
+      subgraphStatus.status = State.Down
+    else if (currentBlock >= subgraphStatus.block + Number(blockTolerance))
+      subgraphStatus.status = State.Warning
+    else subgraphStatus.status = State.Up
+
+    subgraphStatus.statusMessages = []
+    if (subgraphStatus.version !== subgraphStatus.latestRelease)
+      subgraphStatus.statusMessages.push(
+        getVersionMissmatchError(
+          subgraphStatus.version,
+          subgraphStatus.latestRelease
+        )
       )
-    )
+    if (currentBlock >= subgraphStatus.block + Number(blockTolerance))
+      subgraphStatus.statusMessages.push(
+        getBlockMissmatchError(
+          subgraphStatus.block.toString(),
+          currentBlock.toString()
+        )
+      )
+  } catch (error) {
+    const response = String(error)
+    console.log(`subgraphStatus error for ${network.name}: ${response} `)
+  }
   return subgraphStatus
 }

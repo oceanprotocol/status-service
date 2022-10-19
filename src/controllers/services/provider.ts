@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import fetch from 'cross-fetch'
-import { IProviderStatus, State } from '../../@types'
+import { IComponentStatus, State } from '../../@types'
 import { getVersionMissmatchError } from '../utils/messages'
 
 const fileInfoBody = `{
@@ -92,8 +92,12 @@ async function providerRequest(network: string, path: string, body: string) {
 export default async function providerStatus(
   network: string,
   latestRelease: string
-): Promise<IProviderStatus> {
-  const providerStatus: IProviderStatus = {}
+): Promise<IComponentStatus> {
+  const providerStatus: IComponentStatus = {
+    name: 'event-monitor',
+    status: State.Down,
+    response: 500
+  }
   const response = await fetch(
     `https://v4.provider.${network}.oceanprotocol.com/`
   )

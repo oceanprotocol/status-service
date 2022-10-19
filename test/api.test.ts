@@ -19,34 +19,44 @@ describe('Monitoring App Tests', function () {
     const status: IStatus = {
       network: network,
       currentBlock: recentBlock,
-      components: {
-        market: { status: state1 },
-        dataFarming: { status: state1 },
-        faucet: {},
-        provider: {
+      components: [
+        {
+          name: 'market',
+          status: state1,
+          response: 200
+        },
+        {
+          name: 'dataFarming',
+          status: state1,
+          response: 200
+        },
+        {
+          name: 'provider',
+          status: state1,
           response: 200,
           version: '1.0.20',
-          latestRelease: '1.3.4',
-          status: state1
+          latestRelease: '1.3.4'
         },
-        subgraph: {
-          block: recentBlock,
+        {
+          name: 'subgraph',
           version: '2.1.3',
           latestRelease: '2.1.3',
           response: 200,
-          status: state2
+          status: state2,
+          block: recentBlock
         },
-        aquarius: {
+        {
+          name: 'aquarius',
           response: 200,
           version: '4.4.2',
           latestRelease: '4.5.1',
           validChainList: true,
           block: recentBlock,
-          monitorVersion: '4.5.1',
           validQuery: true,
           status: state1
         },
-        operator: {
+        {
+          name: 'operator',
           limitReached: false,
           response: 200,
           version: '1.0.1',
@@ -54,7 +64,8 @@ describe('Monitoring App Tests', function () {
           environments: 2,
           status: state2
         }
-      },
+      ],
+
       lastUpdatedOn: date
     }
     return status

@@ -1,12 +1,17 @@
 import fetch from 'cross-fetch'
-import { State } from '../../@types'
+import { IComponentStatus, State } from '../../@types'
 
-export default async function marketStatus(): Promise<State> {
+export default async function marketStatus(): Promise<IComponentStatus> {
   try {
     const response = await fetch('https://market.oceanprotocol.com/')
-    if (response.status === 200) return State.Up
-    else return State.Down
+
+    return {
+      name: 'market',
+      status: response.status === 200 ? State.Up : State.Down,
+      response: response.status
+    }
   } catch (error) {
-    console.log(error)
+    const response = String(error)
+    console.log(`marketStatus error: ${response} `)
   }
 }
