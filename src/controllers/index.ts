@@ -42,10 +42,11 @@ async function getStatus(
 
   const status: IStatus = {
     network: network.name,
-    market: { status: marketState },
-    dataFarming: { status: dfState },
+
     currentBlock,
     components: {
+      market: { status: marketState },
+      dataFarming: { status: dfState },
       faucet: {},
       provider,
       subgraph,

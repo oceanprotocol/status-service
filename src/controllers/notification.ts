@@ -27,12 +27,12 @@ export default function notification(statuses: IStatus[]): ISummary[] {
       },
       {
         name: 'Market',
-        status: status.market.status,
+        status: status.components.market.status,
         network: status.network
       },
       {
         name: 'Data Farming (https://df.oceandao.org/rewards)',
-        status: status.dataFarming.status,
+        status: status.components.dataFarming.status,
         network: status.network
       }
     ]

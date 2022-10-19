@@ -7,9 +7,10 @@ export enum State {
 export interface IStatus {
   network: string
   currentBlock: number
-  market: { status?: State }
-  dataFarming: { status?: State }
+
   components: {
+    market: { status?: State }
+    dataFarming: { status?: State }
     faucet: IFaucetStatus | Record<string, never>
     aquarius: IAquariusStatus
     provider: IProviderStatus

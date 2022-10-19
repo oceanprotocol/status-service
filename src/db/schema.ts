@@ -4,23 +4,24 @@ import { IStatus, State } from '../@types'
 export const statusSchema = new Schema<IStatus>({
   network: { type: String, required: true },
   currentBlock: { type: Number, required: true },
-  market: {
-    status: {
-      type: String,
-      enum: State,
-      required: true,
-      default: State.Warning
-    }
-  },
-  dataFarming: {
-    status: {
-      type: String,
-      enum: State,
-      required: true,
-      default: State.Warning
-    }
-  },
+
   components: {
+    market: {
+      status: {
+        type: String,
+        enum: State,
+        required: true,
+        default: State.Warning
+      }
+    },
+    dataFarming: {
+      status: {
+        type: String,
+        enum: State,
+        required: true,
+        default: State.Warning
+      }
+    },
     faucet: {
       status: {
         type: String,

@@ -19,9 +19,9 @@ describe('Monitoring App Tests', function () {
     const status: IStatus = {
       network: network,
       currentBlock: recentBlock,
-      market: { status: state1 },
-      dataFarming: { status: state1 },
       components: {
+        market: { status: state1 },
+        dataFarming: { status: state1 },
         faucet: {},
         provider: {
           response: 200,
