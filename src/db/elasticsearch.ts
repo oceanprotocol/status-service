@@ -3,7 +3,6 @@ import { IStatus } from '../@types'
 import 'dotenv/config'
 export async function connection(): Promise<Client> {
   try {
-    console.log(' process.env.DB_URL', process.env.DB_URL)
     const client = new Client({
       node: process.env.DB_URL || 'https://localhost:9200',
       auth: {
