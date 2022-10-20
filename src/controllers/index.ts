@@ -7,12 +7,11 @@ import operatorStatus from './services/operator'
 import faucetStatus from './services/faucet'
 import dfStatus from './services/dataFarming'
 import { IStatus, INetwork, ICurrentVersions } from '../@types/index'
-import notification from './notification'
 import { getBlock } from './utils/ethers'
-import { insertMany } from '../db/mongodb'
 import latestRelease from './utils/github'
 import cexaStatus from './services/cexa'
 import eventMonitorStatus from './services/event-monitor'
+import { insertMany } from '../db/elasticsearch'
 
 async function getNetwordStatus(
   network: INetwork,
@@ -96,13 +95,13 @@ export default async function monitor(): Promise<string> {
 
     const results = await Promise.all(promise)
     allStatuses.push(...results)
+
     // send notification email
     // notification(allStatuses)
     // Update DB
-
+    const response = await insertMany(allStatuses)
     console.timeEnd(`Updated status for all networks`)
-    const dbResponse = await insertMany(allStatuses)
-    return dbResponse
+    return response
   } catch (error) {
     const response = String(error)
     console.log('# error: ', response)

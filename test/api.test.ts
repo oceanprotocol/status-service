@@ -2,9 +2,10 @@ import { assert } from 'chai'
 import mail from '../src/controllers/mail'
 import notification from '../src/controllers/notification'
 import { IStatus, ISummary, State } from '../src/@types'
-import { insertMany } from '../src/db/mongodb'
 import request from 'supertest'
 import app from '../src/app'
+import { insertMany } from '../src/db/elasticsearch'
+import 'dotenv/config'
 
 describe('Monitoring App Tests', function () {
   this.timeout(300000)
@@ -145,7 +146,7 @@ describe('Monitoring App Tests', function () {
     const response = await request(app).get('/forceUpdate').expect(200)
 
     assert(
-      response.body.response === 'status inserted into MongoDB',
+      response.body.response === 'status inserted into ElasticSearch',
       'Failed to monitor services and update DB'
     )
   })
@@ -157,6 +158,10 @@ describe('Monitoring App Tests', function () {
       exampleStatus('energyweb', State.Outage, State.Degraded),
       exampleStatus('moonriver', State.Normal, State.Outage)
     ])
-    assert(dbResponse === 'status inserted into MongoDB', 'Failed to update DB')
+
+    assert(
+      dbResponse === 'status inserted into ElasticSearch',
+      'Failed to update DB'
+    )
   })
 })
