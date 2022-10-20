@@ -23,7 +23,7 @@ async function getNetwordStatus(
 
   const status: IStatus = {
     network: network.name,
-
+    lastUpdatedOn: Date.now(),
     currentBlock,
     components: [
       await subgraphStatus(
@@ -37,8 +37,7 @@ async function getNetwordStatus(
         currentBlock,
         currentVersions.aquariusLatestVersion
       )
-    ],
-    lastUpdatedOn: Date.now()
+    ]
   }
   network.faucetWallet &&
     network.rpcUrl &&
