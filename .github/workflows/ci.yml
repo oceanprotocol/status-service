@@ -44,12 +44,10 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-lint-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-lint-${{ env.cache-name }}-
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.8.0
+      - name: Setup ElasticSearch
+        uses: getong/elasticsearch-action@v1.2
         with:
-          mongodb-version: 4.4
-          mongodb-port: 27017
-          mongodb-db: statusHistory
+          elasticsearch version: 8.4.3
       - name: Integration tests
         run: npm ci && npm run test
         env:
