@@ -121,8 +121,9 @@ export default async function subgraphStatus(
 ): Promise<IComponentStatus> {
   const subgraphStatus: IComponentStatus = {
     name: 'subgraph',
-    status: State.Down,
-    response: 500
+    status: State.Outage,
+    response: 500,
+    url: `https://v4.subgraph.${network.name}.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph`
   }
   try {
     const response = await subgraphFetch(network.name, query)
@@ -143,10 +144,10 @@ export default async function subgraphStatus(
       data.tokens.length < 1 ||
       data.nfts.length < 1
     )
-      subgraphStatus.status = State.Down
+      subgraphStatus.status = State.Outage
     else if (currentBlock >= subgraphStatus.block + Number(blockTolerance))
-      subgraphStatus.status = State.Warning
-    else subgraphStatus.status = State.Up
+      subgraphStatus.status = State.Degraded
+    else subgraphStatus.status = State.Normal
 
     subgraphStatus.statusMessages = []
     if (subgraphStatus.version !== subgraphStatus.latestRelease)

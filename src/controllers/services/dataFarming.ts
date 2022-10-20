@@ -6,8 +6,9 @@ export default async function dfStatus(): Promise<IComponentStatus> {
     const response = await fetch('https://df.oceandao.org/rewards')
     return {
       name: 'data-farming',
-      status: response.status === 200 ? State.Up : State.Down,
-      response: response.status
+      status: response.status === 200 ? State.Normal : State.Outage,
+      response: response.status,
+      url: 'https://df.oceandao.org/'
     }
   } catch (error) {
     const response = String(error)

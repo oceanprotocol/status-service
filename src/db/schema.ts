@@ -12,10 +12,11 @@ export const statusSchema = new Schema<IStatus>({
         type: String,
         enum: State,
         required: true,
-        default: State.Warning
+        default: State.Outage
       },
       statusMessages: [{ type: String }],
       response: Number,
+      url: String,
       version: String,
       latestRelease: String,
       validChainList: Boolean,

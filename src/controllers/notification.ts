@@ -20,7 +20,7 @@ export default function notification(statuses: IStatus[]): ISummary[] {
   const downApps: ISummary[] = []
 
   summaryAll.forEach((service) => {
-    if (service.status === 'DOWN') {
+    if (service.status === 'Outage') {
       downApps.push(service)
     }
   })

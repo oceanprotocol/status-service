@@ -73,18 +73,18 @@ describe('Monitoring App Tests', function () {
 
   it('Selects no down apps when nothing is down', async () => {
     const notificationResponse = await notification([
-      exampleStatus('mainnet', State.Up, State.Up),
-      exampleStatus('polygon', State.Up, State.Up),
-      exampleStatus('bsc', State.Up, State.Up),
-      exampleStatus('energyweb', State.Up, State.Up),
-      exampleStatus('moonriver', State.Up, State.Up)
+      exampleStatus('mainnet', State.Normal, State.Normal),
+      exampleStatus('polygon', State.Normal, State.Normal),
+      exampleStatus('bsc', State.Normal, State.Normal),
+      exampleStatus('energyweb', State.Normal, State.Normal),
+      exampleStatus('moonriver', State.Normal, State.Normal)
     ])
     assert(notificationResponse.length === 0, '1 wrong notifications')
   })
 
   it('Selects down apps when everything is down on one network', async () => {
     const notificationResponse = await notification([
-      exampleStatus('moonriver', State.Down, State.Down)
+      exampleStatus('moonriver', State.Outage, State.Outage)
     ])
 
     assert(notificationResponse.length === 6, '2 wrong notifications')
@@ -92,7 +92,7 @@ describe('Monitoring App Tests', function () {
 
   it('Selects down apps when half is down on one network', async () => {
     const notificationResponse = await notification([
-      exampleStatus('moonriver', State.Up, State.Down)
+      exampleStatus('moonriver', State.Normal, State.Outage)
     ])
 
     assert(notificationResponse.length === 2, '3 wrong notifications')
@@ -100,11 +100,11 @@ describe('Monitoring App Tests', function () {
 
   it('Selects down apps when half is down on all networks', async () => {
     const notificationResponse = await notification([
-      exampleStatus('mainnet', State.Up, State.Down),
-      exampleStatus('polygon', State.Down, State.Warning),
-      exampleStatus('bsc', State.Up, State.Down),
-      exampleStatus('energyweb', State.Down, State.Warning),
-      exampleStatus('moonriver', State.Up, State.Down)
+      exampleStatus('mainnet', State.Normal, State.Outage),
+      exampleStatus('polygon', State.Outage, State.Degraded),
+      exampleStatus('bsc', State.Normal, State.Outage),
+      exampleStatus('energyweb', State.Outage, State.Degraded),
+      exampleStatus('moonriver', State.Normal, State.Outage)
     ])
 
     assert(notificationResponse.length === 14, 'wrong notifications')
@@ -112,18 +112,18 @@ describe('Monitoring App Tests', function () {
 
   it('Selects only down apps for notification email for multiple networks', async () => {
     const notificationResponse = await notification([
-      exampleStatus('mainnet', State.Down, State.Down),
-      exampleStatus('polygon', State.Down, State.Down),
-      exampleStatus('bsc', State.Down, State.Down),
-      exampleStatus('energyweb', State.Down, State.Down),
-      exampleStatus('moonriver', State.Down, State.Down)
+      exampleStatus('mainnet', State.Outage, State.Outage),
+      exampleStatus('polygon', State.Outage, State.Outage),
+      exampleStatus('bsc', State.Outage, State.Outage),
+      exampleStatus('energyweb', State.Outage, State.Outage),
+      exampleStatus('moonriver', State.Outage, State.Outage)
     ])
     assert(notificationResponse.length === 30, 'wrong notifications')
   })
 
   it('Sends notification email when one app is down', async () => {
     const downApps: ISummary[] = [
-      { name: 'market', status: State.Down, network: 'polygon' }
+      { name: 'market', status: State.Outage, network: 'polygon' }
     ]
     const mailResp = await mail(downApps, true)
     assert(mailResp === 'message sent', 'mail not sent - mainnet')
@@ -131,11 +131,11 @@ describe('Monitoring App Tests', function () {
 
   it('Sends notification email when multiple apps are down', async () => {
     const downApps: ISummary[] = [
-      { name: 'market', status: State.Down, network: 'mainnet' },
-      { name: 'provider', status: State.Down, network: 'polygon' },
-      { name: 'aquarius', status: State.Down, network: 'energyweb' },
-      { name: 'subgraph', status: State.Down, network: 'moonriver' },
-      { name: 'Operator Service', status: State.Down, network: 'mumbai' }
+      { name: 'market', status: State.Outage, network: 'mainnet' },
+      { name: 'provider', status: State.Outage, network: 'polygon' },
+      { name: 'aquarius', status: State.Outage, network: 'energyweb' },
+      { name: 'subgraph', status: State.Outage, network: 'moonriver' },
+      { name: 'Operator Service', status: State.Outage, network: 'mumbai' }
     ]
     const mailResp = await mail(downApps, true)
     assert(mailResp === 'message sent', 'mail not sent - mainnet')
@@ -151,11 +151,11 @@ describe('Monitoring App Tests', function () {
   })
   it('Updates database', async () => {
     const dbResponse = await insertMany([
-      exampleStatus('mainnet', State.Up, State.Down),
-      exampleStatus('polygon', State.Down, State.Warning),
-      exampleStatus('bsc', State.Up, State.Down),
-      exampleStatus('energyweb', State.Down, State.Warning),
-      exampleStatus('moonriver', State.Up, State.Down)
+      exampleStatus('mainnet', State.Normal, State.Outage),
+      exampleStatus('polygon', State.Outage, State.Degraded),
+      exampleStatus('bsc', State.Normal, State.Outage),
+      exampleStatus('energyweb', State.Outage, State.Degraded),
+      exampleStatus('moonriver', State.Normal, State.Outage)
     ])
     assert(dbResponse === 'status inserted into MongoDB', 'Failed to update DB')
   })

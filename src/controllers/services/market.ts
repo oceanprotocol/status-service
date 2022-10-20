@@ -7,8 +7,9 @@ export default async function marketStatus(): Promise<IComponentStatus> {
 
     return {
       name: 'market',
-      status: response.status === 200 ? State.Up : State.Down,
-      response: response.status
+      status: response.status === 200 ? State.Normal : State.Outage,
+      response: response.status,
+      url: 'https://market.oceanprotocol.com/'
     }
   } catch (error) {
     const response = String(error)

@@ -9,8 +9,9 @@ export default async function faucetStatus(
 ): Promise<IComponentStatus> {
   const status: IComponentStatus = {
     name: 'faucet',
-    status: State.Down,
-    response: 500
+    status: State.Outage,
+    response: 500,
+    url: `https://faucet.${network.name}.oceanprotocol.com/`
   }
   try {
     const web3Provider = getWeb3Provider(network)
@@ -54,18 +55,29 @@ export default async function faucetStatus(
       await fetch(`https://faucet.${network.name}.oceanprotocol.com/`)
     ).status
 
-    if (
-      status.response === 200 &&
-      status.ethBalanceSufficient &&
-      status.oceanBalanceSufficient
-    )
-      status.status = State.Up
-    else status.status = State.Down
+    if (status.response === 200) status.status = State.Normal
+    else status.status = State.Outage
     status.statusMessages = []
-    if (!status.ethBalanceSufficient)
-      status.statusMessages.push(`Insufficient eth`)
-    if (!status.ethBalanceSufficient)
-      status.statusMessages.push(`Insufficient ocean`)
+
+    if (Number(status.oceanBalance) < 1000) {
+      status.status = State.Outage
+      status.statusMessages.push(
+        `Insufficient OCEAN. Available ${status.oceanBalance}`
+      )
+    } else if (!status.oceanBalanceSufficient)
+      status.statusMessages.push(
+        `Low on OCEAN. Available ${status.oceanBalance}`
+      )
+
+    if (Number(status.ethBalance) < 0.3) {
+      status.status = State.Outage
+      status.statusMessages.push(
+        `Insufficient network tokens. Available ${status.ethBalance}`
+      )
+    } else if (!status.ethBalanceSufficient)
+      status.statusMessages.push(
+        `Low on network tokens. Available ${status.ethBalance}`
+      )
   } catch (error) {
     const response = String(error)
     console.log(`faucetStatus error for ${network.name}: ${response} `)

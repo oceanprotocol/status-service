@@ -7,8 +7,9 @@ export default async function operatorStatus(
 ): Promise<IComponentStatus> {
   const status: IComponentStatus = {
     name: 'operator-service',
-    status: State.Down,
-    response: 500
+    status: State.Outage,
+    response: 500,
+    url: 'https://stagev4.c2d.oceanprotocol.com'
   }
   try {
     const response = await fetch(`https://stagev4.c2d.oceanprotocol.com`)
@@ -35,13 +36,13 @@ export default async function operatorStatus(
     })
     status.statusMessages = []
     if (status.response !== 200 || status.environments < Number(c2dEnvironment))
-      status.status = State.Down
-    else if (status.limitReached === true) {
+      status.status = State.Outage
+    else status.status = State.Normal
+
+    if (status.limitReached === true)
       status.statusMessages.push(
         `Maximum job limit of ${maxJobs.toString()} has been reached`
       )
-      status.status = State.Warning
-    } else status.status = State.Up
 
     if (status.version !== status.latestRelease)
       status.statusMessages.push(

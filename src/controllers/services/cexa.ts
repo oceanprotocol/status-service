@@ -6,7 +6,7 @@ export default async function cexaStatus(): Promise<IComponentStatus> {
     const response = await fetch(process.env.CEX_URL)
     return {
       name: 'cexa',
-      status: response.status === 200 ? State.Up : State.Down,
+      status: response.status === 200 ? State.Normal : State.Outage,
       response: response.status
     }
   } catch (error) {

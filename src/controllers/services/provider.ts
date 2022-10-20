@@ -94,9 +94,10 @@ export default async function providerStatus(
   latestRelease: string
 ): Promise<IComponentStatus> {
   const providerStatus: IComponentStatus = {
-    name: 'event-monitor',
-    status: State.Down,
-    response: 500
+    name: 'provider',
+    status: State.Outage,
+    response: 500,
+    url: `https://v4.provider.${network}.oceanprotocol.com/`
   }
   const response = await fetch(
     `https://v4.provider.${network}.oceanprotocol.com/`
@@ -117,8 +118,8 @@ export default async function providerStatus(
   const validDt = ethers.utils.isAddress(initializeResponse.datatoken)
 
   if (response.status !== 200 && !fileInfo.valid && !validDt)
-    providerStatus.status = State.Down
-  else providerStatus.status = State.Up
+    providerStatus.status = State.Outage
+  else providerStatus.status = State.Normal
 
   providerStatus.statusMessages = []
   if (providerStatus.version !== providerStatus.latestRelease)

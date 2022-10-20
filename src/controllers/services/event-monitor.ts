@@ -12,8 +12,9 @@ export default async function eventMonitorStatus(
 ): Promise<IComponentStatus> {
   const status: IComponentStatus = {
     name: 'event-monitor',
-    status: State.Down,
-    response: 500
+    status: State.Outage,
+    response: 500,
+    url: 'https://v4.aquarius.oceanprotocol.com/'
   }
   try {
     const response = await fetch('https://v4.aquarius.oceanprotocol.com/')
@@ -35,10 +36,10 @@ export default async function eventMonitorStatus(
       ? process.env.BLOCK_TOLERANCE
       : '100'
 
-    if (status.response !== 200) status.status = State.Down
+    if (status.response !== 200) status.status = State.Outage
     else if (currentBlock >= status.block + Number(blockTolerance))
-      status.status = State.Warning
-    else status.status = State.Up
+      status.status = State.Degraded
+    else status.status = State.Normal
 
     status.statusMessages = []
     if (status.version !== status.latestRelease)
