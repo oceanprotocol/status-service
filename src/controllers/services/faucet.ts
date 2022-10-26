@@ -1,8 +1,8 @@
-import { ethers } from 'ethers'
 import fetch from 'cross-fetch'
+import Web3 from 'web3'
 import { IComponentStatus, INetwork, State } from '../../@types'
-import getWeb3Provider from '../utils/ethers'
 import abi from '../../abi/token.json'
+import { getTokenBalance } from '../utils/web3'
 
 export default async function faucetStatus(
   network: INetwork
@@ -14,14 +14,12 @@ export default async function faucetStatus(
     url: `https://faucet.${network.name}.oceanprotocol.com/`
   }
   try {
-    const web3Provider = getWeb3Provider(network)
+    const web3Provider = new Web3(network.rpcUrl)
 
     // Check Faucet ETH Balance for gas
 
-    status.ethBalance = ethers.utils.formatUnits(
-      await (await web3Provider.getBalance(network.faucetWallet)).toString(),
-      18
-    )
+    const ethBalance = await web3Provider.eth.getBalance(network.faucetWallet)
+    status.ethBalance = Web3.utils.fromWei(ethBalance)
 
     const minEth = process.env.MIN_FAUCET_ETH
       ? new Number(process.env.MIN_FAUCET_ETH)
@@ -32,15 +30,14 @@ export default async function faucetStatus(
     } else status.ethBalanceSufficient = true
 
     // Check Faucet OCEAN Balance
-    const contract = new ethers.Contract(
+
+    const oceanBalance = await getTokenBalance(
+      network.faucetWallet,
+      18,
       network.oceanAddress,
-      abi,
       web3Provider
     )
-    status.oceanBalance = ethers.utils.formatUnits(
-      await contract.balanceOf(network.faucetWallet),
-      18
-    )
+    status.oceanBalance = oceanBalance
 
     const minOcean = process.env.MIN_FAUCET_OCEAN
       ? new Number(process.env.MIN_FAUCET_OCEAN)

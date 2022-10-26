@@ -1,5 +1,5 @@
-import { ethers } from 'ethers'
 import fetch from 'cross-fetch'
+import Web3 from 'web3'
 import { IComponentStatus, State } from '../../@types'
 import { getVersionMissmatchError } from '../utils/messages'
 
@@ -115,7 +115,7 @@ export default async function providerStatus(
     }&fileIndex=0&consumerAddress=0x0000000000000000000000000000000000000000`
   )
   const initializeResponse = await initialize.json()
-  const validDt = ethers.utils.isAddress(initializeResponse.datatoken)
+  const validDt = Web3.utils.isAddress(initializeResponse.datatoken)
 
   if (response.status !== 200 && !fileInfo.valid && !validDt)
     providerStatus.status = State.Outage

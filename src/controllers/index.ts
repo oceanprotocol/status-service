@@ -7,18 +7,32 @@ import operatorStatus from './services/operator'
 import faucetStatus from './services/faucet'
 import dfStatus from './services/dataFarming'
 import { IStatus, INetwork, ICurrentVersions } from '../@types/index'
-import { getBlock } from './utils/ethers'
+import { getBlock } from './utils/web3'
 import latestRelease from './utils/github'
 import cexaStatus from './services/cexa'
 import eventMonitorStatus from './services/event-monitor'
 import { insertMany } from '../db/elasticsearch'
+import notification from './notification'
 
 async function getNetwordStatus(
   network: INetwork,
   currentVersions: ICurrentVersions
 ): Promise<IStatus> {
-  console.log(`Starting checking componentes for ${network.name}`)
-  console.time(`Finished checking componentes for ${network.name}`)
+  try {
+  } catch (error) {}
+  console.log(
+    `[${
+      process.pid
+    } - ${new Date().valueOf()}] Starting checking componentes for ${
+      network.name
+    }`
+  )
+  const timeLabel = `[${
+    process.pid
+  } - ${new Date().valueOf()}] Finished checking componentes for ${
+    network.name
+  }`
+  console.time(timeLabel)
   const currentBlock = await getBlock(network)
 
   const status: IStatus = {
@@ -43,7 +57,7 @@ async function getNetwordStatus(
     network.rpcUrl &&
     status.components.push(await faucetStatus(network))
 
-  console.timeEnd(`Finished checking componentes for ${network.name}`)
+  console.timeEnd(timeLabel)
   return status
 }
 
@@ -70,8 +84,13 @@ export default async function monitor(): Promise<string> {
   if (!process.env.NETWORKS) {
     return 'No network data provided'
   }
-  console.log(`Started checking the components`)
-  console.time(`Updated status for all networks`)
+  console.log(
+    `[${process.pid} - ${new Date().valueOf()}] Started checking the components`
+  )
+  const timeLabel = `[${
+    process.pid
+  } - ${new Date().valueOf()}] Updated status for all networks`
+  console.time(timeLabel)
   const networks: INetwork[] = JSON.parse(process.env.NETWORKS)
 
   const currentVersions: ICurrentVersions = {
@@ -96,10 +115,10 @@ export default async function monitor(): Promise<string> {
     allStatuses.push(...results)
 
     // send notification email
-    // notification(allStatuses)
+    process.env.SEND_NOTIFICATIONS === 'true' && notification(allStatuses)
     // Update DB
     const response = await insertMany(allStatuses)
-    console.timeEnd(`Updated status for all networks`)
+    console.timeEnd(timeLabel)
     return response
   } catch (error) {
     const response = String(error)
