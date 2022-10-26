@@ -9,7 +9,7 @@
     "start": "node dist/app.js",
     "dev": "nodemon src/app.ts",
     "build": "npm run clean && tsc --sourcemap -p tsconfig.json",
-    "lint": "eslint --ignore-path .gitignore --ext .js --ext .ts --ext .tsx . && npm run type-check",
+    "lint": "eslint --ignore-path .gitignore --ext .js --ext .ts .",
     "clean": "rm -rf ./dist",
     "format": "prettier --ignore-path .gitignore './**/*.{css,yml,js,ts,tsx,json}' --write",
     "test:format": "npm run format && npm run lint",
