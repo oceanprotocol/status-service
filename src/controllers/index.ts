@@ -115,7 +115,7 @@ export default async function monitor(): Promise<string> {
     allStatuses.push(...results)
 
     // send notification email
-    process.env.SEND_NOTIFICATIONS === 'true' && notification(allStatuses)
+    // process.env.SEND_NOTIFICATIONS === 'true' && notification(allStatuses)
     // Update DB
     const response = await insertMany(allStatuses)
     console.timeEnd(timeLabel)
