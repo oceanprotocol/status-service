@@ -43,10 +43,12 @@ function getSectionText(summary: ISummary) {
 export async function sendOutageMessage(issues: ISummary[]) {
   try {
     const lastNotification = await getNotification(NotificationType.DevOps)
-    const sameIssues = objectsEqual(
-      issues.filter((x) => x.status === State.Outage),
-      lastNotification.services.filter((x) => x.status === State.Outage)
-    )
+    const sameIssues =
+      lastNotification &&
+      objectsEqual(
+        issues?.filter((x) => x.status === State.Outage),
+        lastNotification?.services?.filter((x) => x.status === State.Outage)
+      )
 
     //   if (
     //     sameIssues &&

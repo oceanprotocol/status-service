@@ -37,33 +37,36 @@ export async function insertMany(status: IStatus[]): Promise<string> {
   }
 }
 export async function getNotification(type: NotificationType) {
-  const client = await connection()
-  const result = await client.search({
-    body: {
-      from: 0,
-      size: 1,
-      query: {
-        bool: {
-          should: [
-            {
-              match: {
-                _index: 'notifications'
+  try {
+    const client = await connection()
+    const result = await client.search({
+      body: {
+        from: 0,
+        size: 1,
+        query: {
+          bool: {
+            should: [
+              {
+                match: {
+                  _index: 'notifications'
+                }
+              },
+              {
+                match: {
+                  type: type
+                }
               }
-            },
-            {
-              match: {
-                type: type
-              }
-            }
-          ]
+            ]
+          }
+        },
+        sort: {
+          lastUpdatedOn: 'desc'
         }
-      },
-      sort: {
-        lastUpdatedOn: 'desc'
       }
-    }
-  })
-  return result.hits.hits[0]._source as Notification
+    })
+    return result.hits?.hits[0]?._source as Notification
+  } catch (e) {}
+  return
 }
 
 export async function addNotification(type: string, services: ISummary[]) {
