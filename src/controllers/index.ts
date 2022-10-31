@@ -12,7 +12,7 @@ import latestRelease from './utils/github'
 import cexaStatus from './services/cexa'
 import eventMonitorStatus from './services/event-monitor'
 import { insertMany } from '../db/elasticsearch'
-import notification from './notification'
+import notification from './utils/notification'
 
 async function getNetwordStatus(
   network: INetwork,
@@ -115,7 +115,7 @@ export default async function monitor(): Promise<string> {
     allStatuses.push(...results)
 
     // send notification email
-    // process.env.SEND_NOTIFICATIONS === 'true' && notification(allStatuses)
+    process.env.SEND_NOTIFICATIONS === 'true' && notification(allStatuses)
     // Update DB
     const response = await insertMany(allStatuses)
     console.timeEnd(timeLabel)
