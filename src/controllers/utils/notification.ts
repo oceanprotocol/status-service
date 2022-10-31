@@ -1,7 +1,7 @@
-import { IStatus, ISummary } from '../@types'
-import mail from './mail'
+import { IStatus, ISummary, State } from '../../@types'
+import { sendOutageMessage } from './slack'
 
-export default function notification(statuses: IStatus[]): ISummary[] {
+export default async function notification(statuses: IStatus[]) {
   let summaryAll: ISummary[] = []
   const downApps: ISummary[] = []
   try {
@@ -19,12 +19,14 @@ export default function notification(statuses: IStatus[]): ISummary[] {
       summaryAll = summaryAll.concat(summary)
     })
 
-    summaryAll.forEach((service) => {
-      if (service.status === 'Outage') {
-        downApps.push(service)
-      }
-    })
-    downApps.length > 0 && mail(downApps)
+    const issues = summaryAll
+      .filter((x) => x.status === State.Degraded || x.status === State.Outage)
+      .sort((a, b) => {
+        if (a.status === State.Degraded) return 1
+        if (b.status === State.Degraded) return -1
+      })
+
+    issues.length > 0 && (await sendOutageMessage(issues))
   } catch (error) {
     console.log(`#: Failed to send notifications: ${error.message}`)
   }

@@ -4,10 +4,21 @@ export enum State {
   Outage = 'Outage'
 }
 
+export enum NotificationType {
+  Eng = 'Engineering',
+  DevOps = 'DevOps'
+}
+
 export interface IStatus {
   network: string
   currentBlock?: number
   components: IComponentStatus[]
+  lastUpdatedOn: number
+}
+
+export interface Notification {
+  type: NotificationType
+  services: ISummary[]
   lastUpdatedOn: number
 }
 
