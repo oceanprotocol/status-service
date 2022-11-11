@@ -1,7 +1,7 @@
 {
   "name": "ocean-status-service",
   "description": "Ocean Protocol Status Service",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "author": "Ocean Protocol <devops@oceanprotocol.com>",
   "license": "Apache-2.0",
   "main": "./dist/app.js",
