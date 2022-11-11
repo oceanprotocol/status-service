@@ -143,9 +143,10 @@ export default async function subgraphStatus(
       data.users.length < 1 ||
       data.tokens.length < 1 ||
       data.nfts.length < 1
-    )
+    ) {
       subgraphStatus.status = State.Outage
-    else if (currentBlock >= subgraphStatus.block + Number(blockTolerance))
+      subgraphStatus.error = response.statusText + ' OR empty query'
+    } else if (currentBlock >= subgraphStatus.block + Number(blockTolerance))
       subgraphStatus.status = State.Degraded
     else subgraphStatus.status = State.Normal
 
@@ -167,6 +168,7 @@ export default async function subgraphStatus(
   } catch (error) {
     const response = String(error)
     console.log(`subgraphStatus error for ${network.name}: ${response} `)
+    subgraphStatus.error = response
   }
   return subgraphStatus
 }

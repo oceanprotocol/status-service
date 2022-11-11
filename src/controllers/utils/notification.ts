@@ -12,7 +12,8 @@ export default async function notification(statuses: IStatus[]) {
         summary.push({
           name: component.name,
           status: component.status,
-          network: status.network
+          network: status.network,
+          error: component.error
         })
       })
 
@@ -25,7 +26,6 @@ export default async function notification(statuses: IStatus[]) {
         if (a.status === State.Degraded) return 1
         if (b.status === State.Degraded) return -1
       })
-
     issues.length > 0 && (await sendOutageMessage(issues))
   } catch (error) {
     console.log(`#: Failed to send notifications: ${error.message}`)

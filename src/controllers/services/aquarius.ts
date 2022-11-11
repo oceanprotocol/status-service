@@ -69,9 +69,10 @@ export default async function aquariusStatus(
 
     status.validQuery = await aquariusQuery()
     status.response = response.status
-    if (status.response !== 200 || !status.validQuery)
+    if (status.response !== 200 || !status.validQuery) {
       status.status = State.Outage
-    else status.status = State.Normal
+      status.error = response.statusText
+    } else status.status = State.Normal
 
     status.statusMessages = []
     if (status.version !== status.latestRelease)
@@ -81,6 +82,7 @@ export default async function aquariusStatus(
   } catch (error) {
     const response = String(error)
     console.log('aquariusStatus error: ', response)
+    status.error = response
   }
   return status
 }

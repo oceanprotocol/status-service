@@ -39,6 +39,7 @@ export interface IComponentStatus {
   ethBalanceSufficient?: boolean
   oceanBalance?: string
   oceanBalanceSufficient?: boolean
+  error?: string
 }
 
 export interface INetwork {
@@ -54,6 +55,7 @@ export interface ISummary {
   name: string
   status: string
   network: string
+  error?: string
 }
 
 export interface ICurrentVersions {

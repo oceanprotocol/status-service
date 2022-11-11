@@ -93,44 +93,55 @@ export default async function providerStatus(
   network: string,
   latestRelease: string
 ): Promise<IComponentStatus> {
-  const providerStatus: IComponentStatus = {
+  const status: IComponentStatus = {
     name: 'provider',
     status: State.Outage,
     response: 500,
     url: `https://v4.provider.${network}.oceanprotocol.com/`
   }
-  const response = await fetch(
-    `https://v4.provider.${network}.oceanprotocol.com/`
-  )
-  providerStatus.response = response.status
-  providerStatus.version = (await response.json()).version
-  providerStatus.latestRelease = latestRelease
 
-  const fileInfo = (await providerRequest(network, 'fileinfo', fileInfoBody))[0]
-  const initialize = await fetch(
-    `https://v4.provider.${network}.oceanprotocol.com/api/services/initialize?documentId=did:op:${
-      initializeInfo(network).did
-    }&serviceId=${
-      initializeInfo(network).serviceId
-    }&fileIndex=0&consumerAddress=0x0000000000000000000000000000000000000000`
-  )
-  const initializeResponse = await initialize.json()
-  const validDt = Web3.utils.isAddress(initializeResponse.datatoken)
-
-  if (response.status !== 200 && !fileInfo.valid && !validDt)
-    providerStatus.status = State.Outage
-  else providerStatus.status = State.Normal
-
-  providerStatus.statusMessages = []
-  if (providerStatus.version !== providerStatus.latestRelease)
-    providerStatus.statusMessages.push(
-      getVersionMissmatchError(
-        providerStatus.version,
-        providerStatus.latestRelease
-      )
+  try {
+    const response = await fetch(
+      `https://v4.provider.${network}.oceanprotocol.com/`
     )
-  if (!fileInfo.valid)
-    providerStatus.statusMessages.push(`Initialize info endpoint failing`)
+    status.response = response.status
+    status.version = (await response.json()).version
+    status.latestRelease = latestRelease
 
-  return providerStatus
+    const fileInfo = (
+      await providerRequest(network, 'fileinfo', fileInfoBody)
+    )[0]
+    const initialize = await fetch(
+      `https://v4.provider.${network}.oceanprotocol.com/api/services/initialize?documentId=did:op:${
+        initializeInfo(network).did
+      }&serviceId=${
+        initializeInfo(network).serviceId
+      }&fileIndex=0&consumerAddress=0x0000000000000000000000000000000000000000`
+    )
+    const initializeResponse = await initialize.json()
+    const validDt = Web3.utils.isAddress(initializeResponse.datatoken)
+
+    if (response.status !== 200 && !fileInfo.valid && !validDt) {
+      status.status = State.Outage
+      status.error =
+        response.statusText +
+        ' && file info :' +
+        fileInfo.valid +
+        ' && validDt: ' +
+        validDt
+    } else status.status = State.Normal
+
+    status.statusMessages = []
+    if (status.version !== status.latestRelease)
+      status.statusMessages.push(
+        getVersionMissmatchError(status.version, status.latestRelease)
+      )
+    if (!fileInfo.valid)
+      status.statusMessages.push(`Initialize info endpoint failing`)
+  } catch (error) {
+    const response = String(error)
+    console.log(`providerStatus error for ${network}: ${response} `)
+    status.error = response
+  }
+  return status
 }

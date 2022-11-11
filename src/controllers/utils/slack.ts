@@ -37,7 +37,9 @@ function getBaseBlock() {
 }
 
 function getSectionText(summary: ISummary) {
-  return `Network : ${summary.network} | Component: ${summary.name} | Status: ${summary.status}\n`
+  return `Network : ${summary.network} | Component: ${summary.name} | Status: ${
+    summary.status
+  } ${summary.error ? '| Error: ' + summary.error : ''}\n`
 }
 
 export async function sendOutageMessage(issues: ISummary[]) {

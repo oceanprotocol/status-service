@@ -36,8 +36,10 @@ export default async function eventMonitorStatus(
       ? process.env.BLOCK_TOLERANCE
       : '100'
 
-    if (status.response !== 200) status.status = State.Outage
-    else if (currentBlock >= status.block + Number(blockTolerance))
+    if (status.response !== 200) {
+      status.status = State.Outage
+      status.error = response.statusText
+    } else if (currentBlock >= status.block + Number(blockTolerance))
       status.status = State.Degraded
     else status.status = State.Normal
 
@@ -54,6 +56,7 @@ export default async function eventMonitorStatus(
   } catch (error) {
     const response = String(error)
     console.log(`eventMonitorStatus error for ${network.name}: ${response} `)
+    status.error = response
   }
   return status
 }

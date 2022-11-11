@@ -78,6 +78,7 @@ export default async function faucetStatus(
   } catch (error) {
     const response = String(error)
     console.log(`faucetStatus error for ${network.name}: ${response} `)
+    status.error = response
   }
   return status
 }

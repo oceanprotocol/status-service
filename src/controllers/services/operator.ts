@@ -35,9 +35,18 @@ export default async function operatorStatus(
         return (status.limitReached = true)
     })
     status.statusMessages = []
-    if (status.response !== 200 || status.environments < Number(c2dEnvironment))
+    if (
+      status.response !== 200 ||
+      status.environments < Number(c2dEnvironment)
+    ) {
       status.status = State.Outage
-    else status.status = State.Normal
+      status.error =
+        response.statusText +
+        ' && env: ' +
+        environment.statusText +
+        ' && ' +
+        environmentData
+    } else status.status = State.Normal
 
     if (status.limitReached === true)
       status.statusMessages.push(
@@ -51,6 +60,7 @@ export default async function operatorStatus(
   } catch (error) {
     const response = String(error)
     console.log(`operatorStatus error: ${response} `)
+    status.error = response
   }
   return status
 }
