@@ -69,6 +69,12 @@ function initializeInfo(network: string): { did: string; serviceId: string } {
         serviceId:
           '2bb9c8cadd3ebf850a0d80b8b086de2a6c50b5e43971d7e25ad387d1350500e5'
       }
+    case 'sepolia':
+      return {
+        did: '76eb60fad9984291c071d8e8ecb9bc0c4c2b5d46418d67947be620731c17bdbb',
+        serviceId:
+          '2124c26a31571df36e23469b47ace68393ad2d8116427318526321c6bb5d0e25'
+      }
 
     default:
       break
