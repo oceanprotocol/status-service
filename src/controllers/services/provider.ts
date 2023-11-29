@@ -34,6 +34,12 @@ function initializeInfo(network: string): { did: string; serviceId: string } {
         serviceId:
           '5fe2fdf638b71126ce7fba10ca8713cf046d0506f305f4d75747ab628cbbc73c'
       }
+    case 'optimism':
+      return {
+        did: '4cbd07b80dcaeef355411e84cf98842b186c07fad3e5e329c3de6b131847789b',
+        serviceId:
+          '12cb29e8d9a2d947ee8e592d0a000181862119dc3e13a2e59ac68e3d92ddca24'
+      }
     case 'moonriver':
       return {
         did: 'a3aa14de333ee1ecb3b8a842954033c1c0004f9e77020cacb861843478c1079c',
