@@ -22,58 +22,17 @@ function initializeInfo(network: string): { did: string; serviceId: string } {
         did: '39b9fa755de838a1a912e8589f64ce1601157cc2f1418ee9a3e77b7c7342f986',
         serviceId: '0'
       }
-    case 'bsc':
-      return {
-        did: '8f42a3abe49da60474b0e89dd95608d9bbce1d42810469a38d2272efda6783f7',
-        serviceId:
-          '4cea128568e3a72c79efd6cdda10f0892a64c2ece6414d7cfa38dd58cb981555'
-      }
-    case 'energyweb':
-      return {
-        did: '77367b084ada384062c09021bcd14aced2537f708eee59990f14220e19829586',
-        serviceId:
-          '5fe2fdf638b71126ce7fba10ca8713cf046d0506f305f4d75747ab628cbbc73c'
-      }
     case 'optimism':
       return {
         did: '4cbd07b80dcaeef355411e84cf98842b186c07fad3e5e329c3de6b131847789b',
         serviceId:
           '12cb29e8d9a2d947ee8e592d0a000181862119dc3e13a2e59ac68e3d92ddca24'
       }
-    case 'moonriver':
-      return {
-        did: 'a3aa14de333ee1ecb3b8a842954033c1c0004f9e77020cacb861843478c1079c',
-        serviceId:
-          'e02fda4094bb3c06bdbe1b300adb137922e77a82ab818595f6f3d3b38cc1a885'
-      }
-    case 'ropsten':
-      return {
-        did: '575ac17378b37f678ff7d1e67aa7d0cd78f3d5618a28822efa244cb1ae009a7c',
-        serviceId:
-          '921b5fc518651a8fe192c3cff4456656dde88a8541de45016c630dab52142e65'
-      }
-    case 'rinkeby':
-      return {
-        did: '6d2e99a4d4d501b6ebc0c60d0d6899305c4e8ecbc7293c132841e8d46832bd89',
-        serviceId: '0'
-      }
     case 'mumbai':
       return {
         did: '3258e62ced6bf8da9390cb132bdf31a4ca9b4474c40c5e3c898e70b85eb81a35',
         serviceId:
           'ac7ff0c2db9f76465874e01b9490c8cb7a854ba7935c4a7bdde3550e4cefca9d'
-      }
-    case 'moonbase':
-      return {
-        did: '3b91a15fef9c47ef76274be9cfc8af7f24055577cf2ecb8e28bc7ee465802781',
-        serviceId:
-          '2bb9c8cadd3ebf850a0d80b8b086de2a6c50b5e43971d7e25ad387d1350500e5'
-      }
-    case 'goerli':
-      return {
-        did: '3b91a15fef9c47ef76274be9cfc8af7f24055577cf2ecb8e28bc7ee465802781',
-        serviceId:
-          '2bb9c8cadd3ebf850a0d80b8b086de2a6c50b5e43971d7e25ad387d1350500e5'
       }
     case 'sepolia':
       return {
