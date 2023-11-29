@@ -53,10 +53,12 @@ export default async function operatorStatus(
         `Maximum job limit of ${maxJobs.toString()} has been reached`
       )
 
-    if (status.version !== status.latestRelease)
+    if (status.version !== status.latestRelease) {
+      status.status = State.Normal
       status.statusMessages.push(
         getVersionMissmatchError(status.version, status.latestRelease)
       )
+    }
   } catch (error) {
     const response = String(error)
     console.log(`operatorStatus error: ${response} `)
