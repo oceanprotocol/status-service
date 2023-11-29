@@ -88,9 +88,9 @@ function initializeInfo(network: string): { did: string; serviceId: string } {
   return
 }
 
-async function providerRequest(network: string, path: string, body: string) {
+async function providerRequest(path: string, body: string) {
   const response = await fetch(
-    `https://v4.provider.${network}.oceanprotocol.com/api/services/${path}`,
+    `https://v4.provider.oceanprotocol.com/api/services/${path}`,
     {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -109,22 +109,18 @@ export default async function providerStatus(
     name: 'provider',
     status: State.Outage,
     response: 500,
-    url: `https://v4.provider.${network}.oceanprotocol.com/`
+    url: `https://v4.provider.oceanprotocol.com/`
   }
 
   try {
-    const response = await fetch(
-      `https://v4.provider.${network}.oceanprotocol.com/`
-    )
+    const response = await fetch(`https://v4.provider.oceanprotocol.com/`)
     status.response = response.status
     status.version = (await response.json()).version
     status.latestRelease = latestRelease
 
-    const fileInfo = (
-      await providerRequest(network, 'fileinfo', fileInfoBody)
-    )[0]
+    const fileInfo = (await providerRequest('fileinfo', fileInfoBody))[0]
     const initialize = await fetch(
-      `https://v4.provider.${network}.oceanprotocol.com/api/services/initialize?documentId=did:op:${
+      `https://v4.provider.oceanprotocol.com/api/services/initialize?documentId=did:op:${
         initializeInfo(network).did
       }&serviceId=${
         initializeInfo(network).serviceId
