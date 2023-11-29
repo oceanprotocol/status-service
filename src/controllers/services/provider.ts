@@ -77,14 +77,14 @@ export default async function providerStatus(
     status.version = (await response.json()).version
     status.latestRelease = latestRelease
 
+    const initInfo = initializeInfo(network)
+    console.log(network, initInfo)
+
     const fileInfo = (await providerRequest('fileinfo', fileInfoBody))[0]
-    const initialize = await fetch(
-      `https://v4.provider.oceanprotocol.com/api/services/initialize?documentId=did:op:${
-        initializeInfo(network).did
-      }&serviceId=${
-        initializeInfo(network).serviceId
-      }&fileIndex=0&consumerAddress=0x0000000000000000000000000000000000000000`
-    )
+    const endpoint = `https://v4.provider.oceanprotocol.com/api/services/initialize?documentId=did:op:${initInfo.did}&serviceId=${initInfo.serviceId}&fileIndex=0&consumerAddress=0x0000000000000000000000000000000000000000`
+    const initialize = await fetch(endpoint)
+    console.log(network, endpoint)
+
     const initializeResponse = await initialize.json()
     const validDt = Web3.utils.isAddress(initializeResponse.datatoken)
 
